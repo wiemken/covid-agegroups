@@ -11,7 +11,7 @@ library(ggplot2)
 library(plotly)
 library(scales)
 library(tidyr)
-
+library(rio)
 
 ############################################################
 #################### CENSUS DATA ###########################
@@ -46,10 +46,10 @@ census %>%
 #################### CASE DATA #############################
 ############################################################
 ### Load COVID-19 case data scraping CDC PowerBI table from: https://covid.cdc.gov/covid-data-tracker/#demographicsovertime
-
-cases <- readxl::read_excel("/Users/timothywiemken/Dropbox/Work/pfizer/covid epi/case by age 2021/case_data.xlsx")
+### data was scraped manually into an excel file and uploaded to github
+cases <-rio::import("https://github.com/wiemken/covid-agegroups/blob/main/case_data.xlsx?raw=true")
 cases %>%
-  mutate(year = lubridate::year(week),) ->cases
+  mutate(year = lubridate::year(week)) ->cases
 
 ############################################################
 #################### EDIT  #################################
