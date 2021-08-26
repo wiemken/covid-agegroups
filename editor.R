@@ -1,3 +1,7 @@
+
+############################################################
+#################### LOAD PACKAGES #########################
+############################################################
 library(dplyr)
 library(janitor)
 library(vroom)
@@ -8,13 +12,17 @@ library(plotly)
 library(scales)
 library(tidyr)
 
+
 ############################################################
 #################### CENSUS DATA ###########################
 ############################################################
-
-#### CENSUS DATA: https://www.census.gov/data/datasets/2017/demo/popproj/2017-popproj.html
+### Load in US Census data estimates from: https://www.census.gov/data/datasets/2017/demo/popproj/2017-popproj.html
 census <- vroom("https://www2.census.gov/programs-surveys/popproj/datasets/2017/2017-popproj/np2017_d1_mid.csv")
 
+### Clean names with janitor::clean_names
+### sex, origin, race == 0 represents all categories combined
+### keep only 2020/2021
+### compute population sums by age groups
 census %>%
   janitor::clean_names() %>%
   filter(sex == 0, origin==0, race==0, year %in%c(2020, 2021)) %>%
@@ -37,6 +45,7 @@ census %>%
 ############################################################
 #################### CASE DATA #############################
 ############################################################
+### Load COVID-19 case data scraping CDC PowerBI table from: https://covid.cdc.gov/covid-data-tracker/#demographicsovertime
 
 cases <- readxl::read_excel("/Users/timothywiemken/Dropbox/Work/pfizer/covid epi/case by age 2021/case_data.xlsx")
 cases %>%
@@ -45,10 +54,14 @@ cases %>%
 ############################################################
 #################### EDIT  #################################
 ############################################################
+### split into 2020 and 2021 to account for different population estimates
 
 cases_2020 <- subset(cases, cases$year==2020)
 cases_2021 <- subset(cases, cases$year==2021)
 
+### compute cases for 2020 and 2021 separately
+### to compute, multiply age-specific rate per 100,000 from CDC PowerBI by census population for age group and divide by 100,000
+### output is estimated number of cases per age group
 cases_2020 %>%
   mutate(age_0_4 = a0_4 * census$pop0_4[1]/100000,
          age_5_11 = a5_11 * census$pop5_11[1]/100000,
@@ -74,26 +87,34 @@ cases_2021 %>%
          age_75 = a75 * census$pop75[2]/100000
   ) -> cases_2021
 
+### bind together 2020 and 2021 
 df <- rbind(cases_2020, cases_2021)
 
+### round continuous data to nearest whole number
 roundme<-names(df)[13:22]
 for(i in 1:3){
   df[,roundme[i]] <- ceiling(df[,roundme[i]])
 }
 
+### keep only columns of interest
 df <- df[,c(1,13,14,15)]
 
+### pivot to long format for plotting
 df %>%
   pivot_longer(cols = starts_with("age"), names_to = "age_group", values_to = "cases") -> df
 
+### factor age group to ensure proper arrangement
 df$age_group <- factor(df$age_group, levels = c("age_0_4", "age_5_11", "age_12_15"), labels = c("0-4 Years", "5-11 Years", "12-15 Years"))
+### ensure 'week' column is date format
 df$week <- as.Date(df$week)
 
+### compute totals for plot annotation
 total04<-sum(df$cases[df$age_group=="0-4 Years"])
 total511<-sum(df$cases[df$age_group=="5-11 Years"])
 total1215<-sum(df$cases[df$age_group=="12-15 Years"])
 total <- sum(df$cases)
 
+### plot clustered bar graph
 p<-ggplot(df, aes(fill=age_group, y=cases, x=week)) + 
   geom_bar(position="dodge", stat="identity") +
   ylab("Number of Cases \n") +
@@ -116,13 +137,16 @@ p<-ggplot(df, aes(fill=age_group, y=cases, x=week)) +
               size=3)
              
   p
+  
+  ### save on desktop
 ggsave("~/Desktop/file.pdf", width=9, height=5)
 
+### convert to ggplotly for interactive plot
 yo <- ggplotly(p)
-
+### save interactive plot to desktop
 htmlwidgets::saveWidget(yo, "~/Desktop/plot.html")
 
-
+### write out raw data if interested
 #write.table(df, "~/Desktop/rawdata.csv", sep=",", row.names=F)
 
 
