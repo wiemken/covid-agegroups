@@ -92,14 +92,14 @@ cases_2021 %>%
 df <- rbind(cases_2020, cases_2021)
 
 ### round continuous data to nearest whole number
-roundme<-names(df)[13:22]
-for(i in 1:3){
-  df[,roundme[i]] <- ceiling(df[,roundme[i]])
-}
+# roundme<-names(df)[13:22]
+# for(i in 1:3){
+#   df[,roundme[i]] <- ceiling(df[,roundme[i]])
+# }
 
 ### keep only columns of interest
 #df <- df[,c(1,13,14,15)]
-table(df$age_group)
+
 ### pivot to long format for plotting
 df %>%
   pivot_longer(cols = starts_with("age"), names_to = "age_group", values_to = "cases") -> df
@@ -127,16 +127,45 @@ total.kidsvax <- sum(df$cases[df$age_group%in%c("0-4 Years", "5-11 Years", "12-1
 total.adultswokidsvax <- sum(df$cases[df$age_group%nin%c("0-4 Years", "5-11 Years")])
 total.adultswithkidsvax <- sum(df$cases[df$age_group%nin%c("0-4 Years", "5-11 Years", "12-15 Years")])
 
+### correct counts  using percent over/under estimate from CDC data overall
+## https://covid.cdc.gov/covid-data-tracker/#demographics
+df$corrected_cases<-NA
+df$corrected_cases[df$age_group=="0-4 Years"]<-df$cases[df$age_group=="0-4 Years"]*(1-0.0242)
+df$corrected_cases[df$age_group=="5-11 Years"]<-df$cases[df$age_group=="5-11 Years"]*1.0329
+df$corrected_cases[df$age_group=="12-15 Years"]<-df$cases[df$age_group=="12-15 Years"]*1.094
+df$corrected_cases[df$age_group=="16-17 Years"]<-df$cases[df$age_group=="16-17 Years"]*1.005
+df$corrected_cases[df$age_group=="18-29 Years"]<-df$cases[df$age_group=="18-29 Years"]*1.0132
+df$corrected_cases[df$age_group=="30-39 Years"]<-df$cases[df$age_group=="30-39 Years"]*(1-0.0085)
+df$corrected_cases[df$age_group=="40-49 Years"]<-df$cases[df$age_group=="40-49 Years"]*1.0079
+df$corrected_cases[df$age_group=="50-64 Years"]<-df$cases[df$age_group=="50-64 Years"]*1.0070
+df$corrected_cases[df$age_group=="65-74 Years"]<-df$cases[df$age_group=="65-74 Years"]*(1-0.0418)
+df$corrected_cases[df$age_group=="≥75 Years"]<-df$cases[df$age_group=="≥75 Years"]*(1-0.0279)
 
+### compute totals for plot annotation on corrected counts
+total04_corrected<-sum(df$corrected_cases[df$age_group=="0-4 Years"])
+total511_corrected<-sum(df$corrected_cases[df$age_group=="5-11 Years"])
+total1215_corrected<-sum(df$corrected_cases[df$age_group=="12-15 Years"])
+total1617_corrected<-sum(df$corrected_cases[df$age_group=="16-17 Years"])
+total1829_corrected<-sum(df$corrected_cases[df$age_group=="18-29 Years"])
+total3039_corrected<-sum(df$corrected_cases[df$age_group=="30-39 Years"])
+total4049_corrected<-sum(df$corrected_cases[df$age_group=="40-49 Years"])
+total5064_corrected<-sum(df$corrected_cases[df$age_group=="50-64 Years"])
+total6574_corrected<-sum(df$corrected_cases[df$age_group=="65-74 Years"])
+total75_corrected<-sum(df$corrected_cases[df$age_group=="≥75 Years"])
+total.overall_corrected <- sum(df$corrected_cases)
+total.kidsunvax_corrected <- sum(df$corrected_cases[df$age_group%in%c("0-4 Years", "5-11 Years")])
+total.kidsvax_corrected <- sum(df$corrected_cases[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years")])
+total.adultswokidsvax <- sum(df$corrected_cases[df$age_group%nin%c("0-4 Years", "5-11 Years")])
+total.adultswithkidsvax <- sum(df$corrected_cases[df$age_group%nin%c("0-4 Years", "5-11 Years", "12-15 Years")])
 
 
 ### plot clustered bar graph
-p<-ggplot(df[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years")], aes(fill=age_group, y=cases, x=week)) + 
+p<-ggplot(df[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years"),], aes(fill=age_group, y=cases, x=week)) + 
   geom_bar(position="dodge", stat="identity") +
   ylab("Number of Cases \n") +
   xlab("\nWeek Ending") +
   scale_y_continuous(label=comma, limits=c(0,70000), breaks=c(seq(0,70000, by=10000))) +
-  scale_fill_discrete(name = "Age Group") +
+  scale_fill_discrete(name = "Age Group", values = c("0-4 Years" = "#66c2a5", "5-11 Years" = "#fc8d62", "12-15 Years" = "#8da0cb")) +
   scale_x_date(date_breaks = "5 weeks") +
   theme(
     panel.background = element_blank(),
@@ -152,10 +181,34 @@ p<-ggplot(df[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years")], aes(f
               "\nGrand Total:", format(total.kidsvax, big.mark = ",", scientific=F)),
               size=3)
              
-  p
+  
+  
+## plot corrected
+pcorr<-ggplot(df[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years"),], aes(fill=age_group, y=corrected_cases, x=week)) + 
+  geom_bar(position="dodge", stat="identity") +
+  ylab("Number of Cases \n") +
+  xlab("\nWeek Ending") +
+  scale_y_continuous(label=comma, limits=c(0,70000), breaks=c(seq(0,70000, by=10000))) +
+  scale_fill_discrete(name = "Age Group") +
+  scale_x_date(date_breaks = "5 weeks") +
+  theme(
+    panel.background = element_blank(),
+    axis.line = element_line(color = "darkgray"),
+    axis.text.x = element_text(angle = 90)
+  ) +
+  annotate(geom="text", x=as.Date("2020-06-22"), 
+           y=60000, 
+           label=
+             paste("Total 0-4 years:", format(total04_corrected, big.mark = ",", scientific=F),
+                   "\nTotal 5-11 years:", format(total511_corrected, big.mark = ",", scientific=F),
+                   "\nTotal 12-15 years:", format(total1215_corrected, big.mark = ",", scientific=F),
+                   "\nGrand Total:", format(total.kidsvax_corrected, big.mark = ",", scientific=F)),
+           size=3)
+
   
   ### save on desktop
-ggsave("~/Desktop/file.pdf", width=9, height=5)
+ggsave(plot = p, "~/Desktop/file.pdf", width=9, height=5)
+ggsave(plot = pcorr, "~/Desktop/file_corrected.pdf", width=9, height=5)
 
 ### convert to ggplotly for interactive plot
 yo <- ggplotly(p)
@@ -166,10 +219,5 @@ htmlwidgets::saveWidget(yo, "~/Desktop/plot.html")
 #write.table(df, "~/Desktop/rawdata.csv", sep=",", row.names=F)
 
 
-#### compute total for kids (not eligible)
-
-### compute total rate for adults (eligible) 1 - including 12-15
-
-### 2 - not including 12-15
 
 
