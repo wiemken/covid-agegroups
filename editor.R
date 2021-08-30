@@ -159,61 +159,81 @@ total.adultswokidsvax <- sum(df$corrected_cases[df$age_group%nin%c("0-4 Years", 
 total.adultswithkidsvax <- sum(df$corrected_cases[df$age_group%nin%c("0-4 Years", "5-11 Years", "12-15 Years")])
 
 
+### start plotting first three age groups
+df.plot <- df[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years"),]
 ### plot clustered bar graph
-p<-ggplot(df[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years"),], aes(fill=age_group, y=cases, x=week)) + 
-  geom_bar(position="dodge", stat="identity") +
+p<-ggplot(df.plot,
+          aes(linetype=age_group, 
+              y=cases, 
+              x=week)) + 
+  geom_line(size=0.8) +
   ylab("Number of Cases \n") +
   xlab("\nWeek Ending") +
   scale_y_continuous(label=comma, limits=c(0,70000), breaks=c(seq(0,70000, by=10000))) +
-  scale_fill_discrete(name = "Age Group", values = c("0-4 Years" = "#66c2a5", "5-11 Years" = "#fc8d62", "12-15 Years" = "#8da0cb")) +
-  scale_x_date(date_breaks = "5 weeks") +
+  scale_linetype_manual(name = "Age Group", values = c("solid", "longdash", "dotted")) +
+  #scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "gray90", "5-11 Years" = "gray70", "12-15 Years" = "black")) +
+  scale_x_date(date_breaks = "3 weeks",  limits = c(min(df.plot$week), max = max(df.plot$week)), expand=c(0.02,0.02)) +
   theme(
     panel.background = element_blank(),
     axis.line = element_line(color = "darkgray"),
-    axis.text.x = element_text(angle = 90)
+    axis.text.x = element_text(angle = 90),
+    legend.key=element_blank(),
+    legend.background=element_blank(),
+    legend.position = "right",
+    legend.key.width = unit(3, "line")
   ) +
     annotate(geom="text", x=as.Date("2020-06-22"), 
              y=60000, 
              label=
-               paste("Total 0-4 years:", format(total04, big.mark = ",", scientific=F),
-              "\nTotal 5-11 years:", format(total511, big.mark = ",", scientific=F),
-              "\nTotal 12-15 years:", format(total1215, big.mark = ",", scientific=F),
-              "\nGrand Total:", format(total.kidsvax, big.mark = ",", scientific=F)),
-              size=3)
-             
-  
-  
+               paste("Total 0-4 years:", format(total04, big.mark = ",", scientific=F, digits=0),
+              "\nTotal 5-11 years:", format(total511, big.mark = ",", scientific=F, digits=0),
+              "\nTotal 12-15 years:", format(total1215, big.mark = ",", scientific=F, digits=0),
+              "\nGrand Total:", format(total.kidsvax, big.mark = ",", scientific=F, digits=0)),
+              size=3) 
+p  
+ggsave(plot = p, "~/Desktop/file.pdf", width=9, height=5)
+
 ## plot corrected
-pcorr<-ggplot(df[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years"),], aes(fill=age_group, y=corrected_cases, x=week)) + 
-  geom_bar(position="dodge", stat="identity") +
+pcorr<-ggplot(df.plot,
+          aes(linetype=age_group, 
+              y=corrected_cases, 
+              x=week)) + 
+  geom_line(size=0.8) +
   ylab("Number of Cases \n") +
   xlab("\nWeek Ending") +
   scale_y_continuous(label=comma, limits=c(0,70000), breaks=c(seq(0,70000, by=10000))) +
-  scale_fill_discrete(name = "Age Group") +
-  scale_x_date(date_breaks = "5 weeks") +
+  scale_linetype_manual(name = "Age Group", values = c("solid", "longdash", "dotted")) +
+  #scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "gray90", "5-11 Years" = "gray70", "12-15 Years" = "black")) +
+  scale_x_date(date_breaks = "3 weeks",  limits = c(min(df.plot$week), max = max(df.plot$week)), expand=c(0.02,0.02)) +
   theme(
     panel.background = element_blank(),
     axis.line = element_line(color = "darkgray"),
-    axis.text.x = element_text(angle = 90)
+    axis.text.x = element_text(angle = 90),
+    legend.key=element_blank(),
+    legend.background=element_blank(),
+    legend.position = "right",
+    legend.key.width = unit(3, "line")
   ) +
   annotate(geom="text", x=as.Date("2020-06-22"), 
            y=60000, 
            label=
-             paste("Total 0-4 years:", format(total04_corrected, big.mark = ",", scientific=F),
-                   "\nTotal 5-11 years:", format(total511_corrected, big.mark = ",", scientific=F),
-                   "\nTotal 12-15 years:", format(total1215_corrected, big.mark = ",", scientific=F),
-                   "\nGrand Total:", format(total.kidsvax_corrected, big.mark = ",", scientific=F)),
-           size=3)
+             paste("Total 0-4 years:", format(total04_corrected, big.mark = ",", scientific=F, digits=0),
+                   "\nTotal 5-11 years:", format(total511_corrected, big.mark = ",", scientific=F, digits=0),
+                   "\nTotal 12-15 years:", format(total1215_corrected, big.mark = ",", scientific=F, digits=0),
+                   "\nGrand Total:", format(total.kidsvax_corrected, big.mark = ",", scientific=F, digits=0)),
+           size=3) 
 
   
   ### save on desktop
-ggsave(plot = p, "~/Desktop/file.pdf", width=9, height=5)
 ggsave(plot = pcorr, "~/Desktop/file_corrected.pdf", width=9, height=5)
 
 ### convert to ggplotly for interactive plot
 yo <- ggplotly(p)
+yo_corrected <- ggplotly(pcorr)
+
 ### save interactive plot to desktop
 htmlwidgets::saveWidget(yo, "~/Desktop/plot.html")
+htmlwidgets::saveWidget(yo_corrected, "~/Desktop/plot_corrected.html")
 
 ### write out raw data if interested
 #write.table(df, "~/Desktop/rawdata.csv", sep=",", row.names=F)
