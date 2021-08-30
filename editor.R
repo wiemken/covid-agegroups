@@ -12,6 +12,7 @@ library(plotly)
 library(scales)
 library(tidyr)
 library(rio)
+library(Hmisc)
 
 ############################################################
 #################### CENSUS DATA ###########################
@@ -97,14 +98,15 @@ for(i in 1:3){
 }
 
 ### keep only columns of interest
-df <- df[,c(1,13,14,15)]
-
+#df <- df[,c(1,13,14,15)]
+table(df$age_group)
 ### pivot to long format for plotting
 df %>%
   pivot_longer(cols = starts_with("age"), names_to = "age_group", values_to = "cases") -> df
 
 ### factor age group to ensure proper arrangement
-df$age_group <- factor(df$age_group, levels = c("age_0_4", "age_5_11", "age_12_15"), labels = c("0-4 Years", "5-11 Years", "12-15 Years"))
+df$age_group <- factor(df$age_group, levels = c("age_0_4", "age_5_11", "age_12_15", "age_16_17", "age_18_29", "age_30_39", "age_40_49", "age_50_64", "age_65_74", "age_75"), 
+                       labels = c("0-4 Years", "5-11 Years", "12-15 Years", "16-17 Years", "18-29 Years", "30-39 Years", "40-49 Years", "50-64 Years", "65-74 Years", "≥75 Years"))
 ### ensure 'week' column is date format
 df$week <- as.Date(df$week)
 
@@ -112,10 +114,24 @@ df$week <- as.Date(df$week)
 total04<-sum(df$cases[df$age_group=="0-4 Years"])
 total511<-sum(df$cases[df$age_group=="5-11 Years"])
 total1215<-sum(df$cases[df$age_group=="12-15 Years"])
-total <- sum(df$cases)
+total1617<-sum(df$cases[df$age_group=="16-17 Years"])
+total1829<-sum(df$cases[df$age_group=="18-29 Years"])
+total3039<-sum(df$cases[df$age_group=="30-39 Years"])
+total4049<-sum(df$cases[df$age_group=="40-49 Years"])
+total5064<-sum(df$cases[df$age_group=="50-64 Years"])
+total6574<-sum(df$cases[df$age_group=="65-74 Years"])
+total75<-sum(df$cases[df$age_group=="≥75 Years"])
+total.overall <- sum(df$cases)
+total.kidsunvax <- sum(df$cases[df$age_group%in%c("0-4 Years", "5-11 Years")])
+total.kidsvax <- sum(df$cases[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years")])
+total.adultswokidsvax <- sum(df$cases[df$age_group%nin%c("0-4 Years", "5-11 Years")])
+total.adultswithkidsvax <- sum(df$cases[df$age_group%nin%c("0-4 Years", "5-11 Years", "12-15 Years")])
+
+
+
 
 ### plot clustered bar graph
-p<-ggplot(df, aes(fill=age_group, y=cases, x=week)) + 
+p<-ggplot(df[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years")], aes(fill=age_group, y=cases, x=week)) + 
   geom_bar(position="dodge", stat="identity") +
   ylab("Number of Cases \n") +
   xlab("\nWeek Ending") +
@@ -133,7 +149,7 @@ p<-ggplot(df, aes(fill=age_group, y=cases, x=week)) +
                paste("Total 0-4 years:", format(total04, big.mark = ",", scientific=F),
               "\nTotal 5-11 years:", format(total511, big.mark = ",", scientific=F),
               "\nTotal 12-15 years:", format(total1215, big.mark = ",", scientific=F),
-              "\nGrand Total:", format(total, big.mark = ",", scientific=F)),
+              "\nGrand Total:", format(total.kidsvax, big.mark = ",", scientific=F)),
               size=3)
              
   p
@@ -150,5 +166,10 @@ htmlwidgets::saveWidget(yo, "~/Desktop/plot.html")
 #write.table(df, "~/Desktop/rawdata.csv", sep=",", row.names=F)
 
 
+#### compute total for kids (not eligible)
+
+### compute total rate for adults (eligible) 1 - including 12-15
+
+### 2 - not including 12-15
 
 
