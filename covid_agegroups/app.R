@@ -1,6 +1,6 @@
 #App will display output from shiny_helpers, have options to toggle BW/color, select certain age groups
 #------------------------------#
-#Cases not rounding, Add datatable with cases by age group, Corrected/Not corrected data, Fix breaks
+#Add datatable with cases by age group, Fix breaks
 #------------------------------#
 #Libraries + Scripts
 library(shiny)

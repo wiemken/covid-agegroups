@@ -159,8 +159,6 @@ plotter <- function(data, corrected = F, age_groups, color = F){
       if(color == T){
          if(corrected == F){yvar <- "cases"}
          if(corrected == T){yvar <- "corrected_cases"}
-         #yy <- data[yvar]
-         #ifelse(corrected == F, yvar <- "cases", yvar <- "corrected_cases")
       p<-ggplot(data,
                 aes(linetype=age_group,
                     color = age_group,
@@ -198,7 +196,8 @@ plotter <- function(data, corrected = F, age_groups, color = F){
          p<-ggplot(data,
                    aes(linetype=age_group,
                        color = age_group,
-                       y=get(yvar), 
+                       y=get(yvar),
+                       group = 1,
                        x=week,
                        text = paste(
                           "</br>Week:", week,
@@ -226,7 +225,7 @@ plotter <- function(data, corrected = F, age_groups, color = F){
       }
 }
 
-plotter(df, age_groups = "All", color = T, corrected = T)
+#plotter(df, age_groups = "All", color = F, corrected = T)
 
 
 ### start plotting first three age groups
