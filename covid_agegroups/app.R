@@ -23,7 +23,7 @@ ui <- fluidPage(
         mainPanel(
             br(),
             br(),
-            plotlyOutput('plotter_output')
+            plotlyOutput('plotter_output', height = "750")
         ) 
     ) 
 ) 

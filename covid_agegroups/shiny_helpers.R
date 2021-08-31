@@ -14,6 +14,7 @@ library(scales)
 library(tidyr)
 library(rio)
 library(Hmisc)
+library(scales)
 
 #Load in US Census data estimates from: https://www.census.gov/data/datasets/2017/demo/popproj/2017-popproj.html
 census <- vroom("https://www2.census.gov/programs-surveys/popproj/datasets/2017/2017-popproj/np2017_d1_mid.csv")
@@ -156,6 +157,7 @@ plotter <- function(data, corrected = F, age_groups, color = F){
       data <- data[data$age_group%in%c(age_groups),]
       data$cases<-round(data$cases)
       data$corrected_cases<-round(data$corrected_cases)
+      dateVec <- seq(from = min(data$week), to = max(data$week), by = "weeks")
       if(color == T){
          if(corrected == F){yvar <- "cases"}
          if(corrected == T){yvar <- "corrected_cases"}
@@ -177,9 +179,9 @@ plotter <- function(data, corrected = F, age_groups, color = F){
                                                                                       by = (max(data$cases)+(1000-max(data$cases)%%1000))/10))) +
             scale_linetype_manual(name = "", values = c("solid", "longdash", "dotted","solid", "longdash", "dotted","solid", "longdash", "dotted","solid")) + 
             scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "#e9cb67", "5-11 Years" = "#e3bb42", "12-15 Years" = "#dbaa2e",
-                                        "16-17 Years" = "#937926", "18-29 Years" = "#00adad", "30-39 Years" = "#007574", "40-49 Years" = "#004848", "50-64 Years" = "#fcabd5",
-                                        "65-74 Years" = "#f25ead", "≥75 Years" = "#6d1f48")) +
-            scale_x_date(date_breaks = "3 weeks",  limits = c(min(data$week), max = max(data$week)), expand=c(0.02,0.02)) +
+                                                               "16-17 Years" = "#937926", "18-29 Years" = "#00adad", "30-39 Years" = "#007574", "40-49 Years" = "#004848", "50-64 Years" = "#fcabd5",
+                                                               "65-74 Years" = "#f25ead", "≥75 Years" = "#6d1f48")) +
+            scale_x_date(breaks = "2 weeks", limits = c(min(dateVec), max = max(dateVec)), expand = c(0.01428571,0.01428571)) +
             theme(
                   panel.background = element_blank(),
                   axis.line = element_line(color = "darkgray"),
@@ -213,7 +215,7 @@ plotter <- function(data, corrected = F, age_groups, color = F){
             scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "#BEBEBE", "5-11 Years" = "#C0C0C0", "12-15 Years" = "#C8C8C8",
                                            "16-17 Years" = "#D0D0D0", "18-29 Years" = "#D3D3D3", "30-39 Years" = "#D8D8D8", "40-49 Years" = "#DCDCDC", "50-64 Years" = "#E0E0E0",
                                            "65-74 Years" = "#E8E8E8", "≥75 Years" = "#F0F0F0")) +
-            scale_x_date(date_breaks = "3 weeks",  limits = c(min(data$week), max = max(data$week)), expand=c(0.02,0.02)) +
+            scale_x_date(breaks = "2 weeks", limits = c(min(dateVec), max = max(dateVec)), expand = c(0.01428571,0.01428571)) +
             theme(
                panel.background = element_blank(),
                axis.line = element_line(color = "darkgray"),
