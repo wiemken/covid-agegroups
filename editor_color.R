@@ -110,6 +110,8 @@ df$age_group <- factor(df$age_group, levels = c("age_0_4", "age_5_11", "age_12_1
 ### ensure 'week' column is date format
 df$week <- as.Date(df$week)
 
+
+
 ### compute totals for plot annotation
 total04<-sum(df$cases[df$age_group=="0-4 Years"])
 total511<-sum(df$cases[df$age_group=="5-11 Years"])
@@ -158,6 +160,12 @@ total.kidsvax_corrected <- sum(df$corrected_cases[df$age_group%in%c("0-4 Years",
 total.adultswokidsvax <- sum(df$corrected_cases[df$age_group%nin%c("0-4 Years", "5-11 Years")])
 total.adultswithkidsvax <- sum(df$corrected_cases[df$age_group%nin%c("0-4 Years", "5-11 Years", "12-15 Years")])
 
+### compute percent diff by age group
+df %>%
+  group_by(age_group) %>%
+  mutate(percent_difference_corrected = round((corrected_cases - lag(corrected_cases)) / corrected_cases *100,1),
+         percent_difference = round((cases - lag(cases)) / cases *100,1)) %>%
+  ungroup() -> df
 
 ### start plotting first three age groups
 df.plot <- df[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years"),]
@@ -190,7 +198,7 @@ p<-ggplot(df.plot,
               "\nGrand Total:", format(total.kidsvax, big.mark = ",", scientific=F, digits=0)),
               size=3) 
 p  
-ggsave(plot = p, "~/Desktop/file.pdf", width=9, height=5)
+#ggsave(plot = p, "~/Desktop/file.pdf", width=9, height=5)
 
 ## plot corrected
 pcorr<-ggplot(df.plot,
@@ -223,7 +231,45 @@ pcorr<-ggplot(df.plot,
 
   
   ### save on desktop
-ggsave(plot = pcorr, "~/Desktop/file_corrected.pdf", width=9, height=5)
+#ggsave(plot = pcorr, "~/Desktop/file_corrected.pdf", width=9, height=5)
+
+## plot corrected percent change
+pcorr_diff<-ggplot(df.plot,
+              aes(colour=age_group, 
+                  y=percent_difference_corrected, 
+                  x=week)) + 
+  geom_line(size=0.8) +
+  ylab("Percent Change from Prior Week \n") +
+  xlab("\nWeek Ending") +
+  scale_y_continuous(label=comma, limits=c( 
+    (min(df$percent_difference_corrected, na.rm=T) - (min(df$percent_difference_corrected, na.rm=T) %% 5)), 
+    (max(df$percent_difference_corrected, na.rm=T) + (5 - max(df$percent_difference_corrected, na.rm=T) %% 5))  ), 
+    breaks=c(
+      seq( (min(df$percent_difference_corrected, na.rm=T) - (min(df$percent_difference_corrected, na.rm=T) %% 5)),
+           (max(df$percent_difference_corrected, na.rm=T) + (5 - max(df$percent_difference_corrected, na.rm=T) %% 5)), 
+           by=25))) +
+  scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "#a6cee3", "5-11 Years" = "#1f78b4", "12-15 Years" = "#b2df8a")) +
+  scale_x_date(date_breaks = "3 weeks",  limits = c(min(df.plot$week), max = max(df.plot$week)), expand=c(0.02,0.02)) +
+  theme(
+    panel.background = element_blank(),
+    axis.line = element_line(color = "darkgray"),
+    axis.text.x = element_text(angle = 90),
+    legend.key=element_blank(),
+    legend.background=element_blank(),
+    legend.position = "right",
+    legend.key.width = unit(3, "line")
+  ) +
+  annotate(geom="text", x=as.Date("2020-06-22"), 
+           y=60000, 
+           label=
+             paste("Total 0-4 years:", format(total04_corrected, big.mark = ",", scientific=F, digits=0),
+                   "\nTotal 5-11 years:", format(total511_corrected, big.mark = ",", scientific=F, digits=0),
+                   "\nTotal 12-15 years:", format(total1215_corrected, big.mark = ",", scientific=F, digits=0),
+                   "\nGrand Total:", format(total.kidsvax_corrected, big.mark = ",", scientific=F, digits=0)),
+           size=3) 
+
+
+
 
 ### convert to ggplotly for interactive plot
 yo <- ggplotly(p)
