@@ -1,6 +1,6 @@
 #Script will create function to create color or BW output of age groups selected
 #------------------------------#
-#Week labels are off
+#Make datatable prep function
 #------------------------------#
 #Libraries
 library(dplyr)

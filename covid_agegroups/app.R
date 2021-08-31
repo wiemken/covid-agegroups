@@ -1,6 +1,6 @@
 #App will display output from shiny_helpers, have options to toggle BW/color, select certain age groups
 #------------------------------#
-#Add datatable with cases by age group, Fix breaks
+#Add datatable with cases by age group, Add details in sidebar
 #------------------------------#
 #Libraries + Scripts
 library(shiny)
