@@ -154,19 +154,25 @@ plotter <- function(data, corrected = F, age_groups, color = F){
             age_groups<-levels(data$age_group)
       }
       data <- data[data$age_group%in%c(age_groups),]
+      data$cases<-round(data$cases)
+      data$corrected_cases<-round(data$corrected_cases)
+      if(color == T){
       p<-ggplot(data,
                 aes(linetype=age_group,
                     color = age_group,
                     y=cases, 
-                    x=week)) + 
+                    x=week,
+                    label1 = week,
+                    label2 = age_group,
+                    label3 = cases)) + 
             geom_line(size=0.8) +
             ylab("Number of Cases \n") +
             xlab("\nWeek Ending") +
             scale_y_continuous(label=comma, limits=c(0,(max(data$cases))+.05*max(data$cases)), breaks=c(seq(0,max(data$cases), by=25000))) +
-            scale_linetype_manual(name = "Age Group", values = c("solid", "longdash", "dotted","solid", "longdash", "dotted","solid", "longdash", "dotted","solid")) + 
-            scale_colour_manual(values = c("0-4 Years" = "#e9cb67", "5-11 Years" = "#e3bb42", "12-15 Years" = "#dbaa2e",
-                                                               "16-17 Years" = "#937926", "18-29 Years" = "#00adad", "30-39 Years" = "#007574", "40-49 Years" = "#004848", "50-64 Years" = "#fcabd5",
-                                                               "65-74 Years" = "#f25ead", "≥75 Years" = "#6d1f48")) +
+            scale_linetype_manual(name = "", values = c("solid", "longdash", "dotted","solid", "longdash", "dotted","solid", "longdash", "dotted","solid")) + 
+            scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "#e9cb67", "5-11 Years" = "#e3bb42", "12-15 Years" = "#dbaa2e",
+                                        "16-17 Years" = "#937926", "18-29 Years" = "#00adad", "30-39 Years" = "#007574", "40-49 Years" = "#004848", "50-64 Years" = "#fcabd5",
+                                        "65-74 Years" = "#f25ead", "≥75 Years" = "#6d1f48")) +
             scale_x_date(date_breaks = "3 weeks",  limits = c(min(data$week), max = max(data$week)), expand=c(0.02,0.02)) +
             theme(
                   panel.background = element_blank(),
@@ -177,73 +183,104 @@ plotter <- function(data, corrected = F, age_groups, color = F){
                   legend.position = "right",
                   legend.key.width = unit(3, "line")
             )
-      return(ggplotly(p))  
+      return(ggplotly(p, tooltip = c("label1","label2","label3")))
+      }
+      if(color == F){
+         p<-ggplot(data,
+                   aes(linetype=age_group,
+                       color = age_group,
+                       y=cases, 
+                       x=week,
+                       label1 = week,
+                       label2 = age_group,
+                       label3 = cases)) + 
+            geom_line(size=0.8) +
+            ylab("Number of Cases \n") +
+            xlab("\nWeek Ending") +
+            scale_y_continuous(label=comma, limits=c(0,(max(data$cases))+.05*max(data$cases)), breaks=c(seq(0,max(data$cases), by=25000))) +
+            scale_linetype_manual(name = "", values = c("solid", "longdash", "dotted","solid", "longdash", "dotted","solid", "longdash", "dotted","solid")) + 
+            scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "#BEBEBE", "5-11 Years" = "#C0C0C0", "12-15 Years" = "#C8C8C8",
+                                           "16-17 Years" = "#D0D0D0", "18-29 Years" = "#D3D3D3", "30-39 Years" = "#D8D8D8", "40-49 Years" = "#DCDCDC", "50-64 Years" = "#E0E0E0",
+                                           "65-74 Years" = "#E8E8E8", "≥75 Years" = "#F0F0F0")) +
+            scale_x_date(date_breaks = "3 weeks",  limits = c(min(data$week), max = max(data$week)), expand=c(0.02,0.02)) +
+            theme(
+               panel.background = element_blank(),
+               axis.line = element_line(color = "darkgray"),
+               axis.text.x = element_text(angle = 90),
+               legend.key=element_blank(),
+               legend.background=element_blank(),
+               legend.position = "right",
+               legend.key.width = unit(3, "line")
+            )
+         return(ggplotly(p, tooltip = c("label1","label2","label3")))
+      }
 }
 
-plotter(df, age_groups = "All")
+plotter(df, age_groups = "All", color = F)
 
 
 ### start plotting first three age groups
 #df.plot <- df[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years"),]
 ### plot clustered bar graph
-p<-ggplot(df.plot,
-          aes(linetype=age_group, 
-              y=cases, 
-              x=week)) + 
-      geom_line(size=0.8) +
-      ylab("Number of Cases \n") +
-      xlab("\nWeek Ending") +
-      scale_y_continuous(label=comma, limits=c(0,70000), breaks=c(seq(0,70000, by=10000))) +
-      scale_linetype_manual(name = "Age Group", values = c("solid", "longdash", "dotted")) +
-      #scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "gray90", "5-11 Years" = "gray70", "12-15 Years" = "black")) +
-      scale_x_date(date_breaks = "3 weeks",  limits = c(min(df.plot$week), max = max(df.plot$week)), expand=c(0.02,0.02)) +
-      theme(
-            panel.background = element_blank(),
-            axis.line = element_line(color = "darkgray"),
-            axis.text.x = element_text(angle = 90),
-            legend.key=element_blank(),
-            legend.background=element_blank(),
-            legend.position = "right",
-            legend.key.width = unit(3, "line")
-      ) +
-      annotate(geom="text", x=as.Date("2020-06-22"), 
-               y=60000, 
-               label=
-                     paste("Total 0-4 years:", format(total04, big.mark = ",", scientific=F, digits=0),
-                           "\nTotal 5-11 years:", format(total511, big.mark = ",", scientific=F, digits=0),
-                           "\nTotal 12-15 years:", format(total1215, big.mark = ",", scientific=F, digits=0),
-                           "\nGrand Total:", format(total.kidsvax, big.mark = ",", scientific=F, digits=0)),
-               size=3) 
-p  
-#ggsave(plot = p, "~/Desktop/file.pdf", width=9, height=5)
-
-## plot corrected
-pcorr<-ggplot(df.plot,
-              aes(linetype=age_group, 
-                  y=corrected_cases, 
-                  x=week)) + 
-      geom_line(size=0.8) +
-      ylab("Number of Cases \n") +
-      xlab("\nWeek Ending") +
-      scale_y_continuous(label=comma, limits=c(0,70000), breaks=c(seq(0,70000, by=10000))) +
-      scale_linetype_manual(name = "Age Group", values = c("solid", "longdash", "dotted")) +
-      #scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "gray90", "5-11 Years" = "gray70", "12-15 Years" = "black")) +
-      scale_x_date(date_breaks = "3 weeks",  limits = c(min(df.plot$week), max = max(df.plot$week)), expand=c(0.02,0.02)) +
-      theme(
-            panel.background = element_blank(),
-            axis.line = element_line(color = "darkgray"),
-            axis.text.x = element_text(angle = 90),
-            legend.key=element_blank(),
-            legend.background=element_blank(),
-            legend.position = "right",
-            legend.key.width = unit(3, "line")
-      ) +
-      annotate(geom="text", x=as.Date("2020-06-22"), 
-               y=60000, 
-               label=
-                     paste("Total 0-4 years:", format(total04_corrected, big.mark = ",", scientific=F, digits=0),
-                           "\nTotal 5-11 years:", format(total511_corrected, big.mark = ",", scientific=F, digits=0),
-                           "\nTotal 12-15 years:", format(total1215_corrected, big.mark = ",", scientific=F, digits=0),
-                           "\nGrand Total:", format(total.kidsvax_corrected, big.mark = ",", scientific=F, digits=0)),
-               size=3) 
+# p<-ggplot(df.plot,
+#           aes(linetype=age_group, 
+#               y=cases, 
+#               x=week)) + 
+#       geom_line(size=0.8) +
+#       ylab("Number of Cases \n") +
+#       xlab("\nWeek Ending") +
+#       scale_y_continuous(label=comma, limits=c(0,70000), breaks=c(seq(0,70000, by=10000))) +
+#       scale_linetype_manual(name = "Age Group", values = c("solid", "longdash", "dotted")) +
+#       #scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "gray90", "5-11 Years" = "gray70", "12-15 Years" = "black")) +
+#       scale_x_date(date_breaks = "3 weeks",  limits = c(min(df.plot$week), max = max(df.plot$week)), expand=c(0.02,0.02)) +
+#       theme(
+#             panel.background = element_blank(),
+#             axis.line = element_line(color = "darkgray"),
+#             axis.text.x = element_text(angle = 90),
+#             legend.key=element_blank(),
+#             legend.background=element_blank(),
+#             legend.position = "right",
+#             legend.key.width = unit(3, "line")
+#       ) +
+#       annotate(geom="text", x=as.Date("2020-06-22"), 
+#                y=60000, 
+#                label=
+#                      paste("Total 0-4 years:", format(total04, big.mark = ",", scientific=F, digits=0),
+#                            "\nTotal 5-11 years:", format(total511, big.mark = ",", scientific=F, digits=0),
+#                            "\nTotal 12-15 years:", format(total1215, big.mark = ",", scientific=F, digits=0),
+#                            "\nGrand Total:", format(total.kidsvax, big.mark = ",", scientific=F, digits=0)),
+#                size=3) 
+# #p  
+# #ggsave(plot = p, "~/Desktop/file.pdf", width=9, height=5)
+# 
+# ## plot corrected
+# pcorr<-ggplot(df.plot,
+#               aes(linetype=age_group, 
+#                   y=corrected_cases, 
+#                   x=week)) + 
+#       geom_line(size=0.8) +
+#       ylab("Number of Cases \n") +
+#       xlab("\nWeek Ending") +
+#       scale_y_continuous(label=comma, limits=c(0,70000), breaks=c(seq(0,70000, by=10000))) +
+#       scale_linetype_manual(name = "Age Group", values = c("solid", "longdash", "dotted")) +
+#       #scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "gray90", "5-11 Years" = "gray70", "12-15 Years" = "black")) +
+#       scale_x_date(date_breaks = "3 weeks",  limits = c(min(df.plot$week), max = max(df.plot$week)), expand=c(0.02,0.02)) +
+#       theme(
+#             panel.background = element_blank(),
+#             axis.line = element_line(color = "darkgray"),
+#             axis.text.x = element_text(angle = 90),
+#             legend.key=element_blank(),
+#             legend.background=element_blank(),
+#             legend.position = "right",
+#             legend.key.width = unit(3, "line")
+#       ) +
+#       annotate(geom="text", x=as.Date("2020-06-22"), 
+#                y=60000, 
+#                label=
+#                      paste("Total 0-4 years:", format(total04_corrected, big.mark = ",", scientific=F, digits=0),
+#                            "\nTotal 5-11 years:", format(total511_corrected, big.mark = ",", scientific=F, digits=0),
+#                            "\nTotal 12-15 years:", format(total1215_corrected, big.mark = ",", scientific=F, digits=0),
+#                            "\nGrand Total:", format(total.kidsvax_corrected, big.mark = ",", scientific=F, digits=0)),
+#                size=3) 
+# 
 
