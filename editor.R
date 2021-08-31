@@ -191,7 +191,7 @@ p<-ggplot(df.plot,
               "\nGrand Total:", format(total.kidsvax, big.mark = ",", scientific=F, digits=0)),
               size=3) 
 p  
-ggsave(plot = p, "~/Desktop/file.pdf", width=9, height=5)
+#ggsave(plot = p, "~/Desktop/file.pdf", width=9, height=5)
 
 ## plot corrected
 pcorr<-ggplot(df.plot,
@@ -225,15 +225,15 @@ pcorr<-ggplot(df.plot,
 
   
   ### save on desktop
-ggsave(plot = pcorr, "~/Desktop/file_corrected.pdf", width=9, height=5)
+#ggsave(plot = pcorr, "~/Desktop/file_corrected.pdf", width=9, height=5)
 
 ### convert to ggplotly for interactive plot
-yo <- ggplotly(p)
-yo_corrected <- ggplotly(pcorr)
+#yo <- ggplotly(p)
+#yo_corrected <- ggplotly(pcorr)
 
 ### save interactive plot to desktop
-htmlwidgets::saveWidget(yo, "~/Desktop/plot.html")
-htmlwidgets::saveWidget(yo_corrected, "~/Desktop/plot_corrected.html")
+#htmlwidgets::saveWidget(yo, "~/Desktop/plot.html")
+#htmlwidgets::saveWidget(yo_corrected, "~/Desktop/plot_corrected.html")
 
 ### write out raw data if interested
 #write.table(df, "~/Desktop/rawdata.csv", sep=",", row.names=F)
