@@ -1,6 +1,6 @@
 #Script will create function to create color or BW output of age groups selected
 #------------------------------#
-#
+#Week labels are off
 #------------------------------#
 #Libraries
 library(dplyr)
@@ -157,14 +157,21 @@ plotter <- function(data, corrected = F, age_groups, color = F){
       data$cases<-round(data$cases)
       data$corrected_cases<-round(data$corrected_cases)
       if(color == T){
+         if(corrected == F){yvar <- "cases"}
+         if(corrected == T){yvar <- "corrected_cases"}
+         #yy <- data[yvar]
+         #ifelse(corrected == F, yvar <- "cases", yvar <- "corrected_cases")
       p<-ggplot(data,
                 aes(linetype=age_group,
                     color = age_group,
-                    y=cases, 
+                    y=get(yvar),
+                    group = 1,
                     x=week,
-                    label1 = week,
-                    label2 = age_group,
-                    label3 = cases)) + 
+                    text = paste(
+                       "</br>Week:", week,
+                       "</br>Age:", age_group,
+                       "</br>Cases:",get(yvar))
+                    )) + 
             geom_line(size=0.8) +
             ylab("Number of Cases \n") +
             xlab("\nWeek Ending") +
@@ -183,17 +190,20 @@ plotter <- function(data, corrected = F, age_groups, color = F){
                   legend.position = "right",
                   legend.key.width = unit(3, "line")
             )
-      return(ggplotly(p, tooltip = c("label1","label2","label3")))
+      return(ggplotly(p, tooltip = c("text")))
       }
       if(color == F){
+         if(corrected == F){yvar <- "cases"}
+         if(corrected == T){yvar <- "corrected_cases"}
          p<-ggplot(data,
                    aes(linetype=age_group,
                        color = age_group,
-                       y=cases, 
+                       y=get(yvar), 
                        x=week,
-                       label1 = week,
-                       label2 = age_group,
-                       label3 = cases)) + 
+                       text = paste(
+                          "</br>Week:", week,
+                          "</br>Age:", age_group,
+                          "</br>Cases:",get(yvar)))) + 
             geom_line(size=0.8) +
             ylab("Number of Cases \n") +
             xlab("\nWeek Ending") +
@@ -212,11 +222,11 @@ plotter <- function(data, corrected = F, age_groups, color = F){
                legend.position = "right",
                legend.key.width = unit(3, "line")
             )
-         return(ggplotly(p, tooltip = c("label1","label2","label3")))
+         return(ggplotly(p, tooltip = c("text")))
       }
 }
 
-plotter(df, age_groups = "All", color = F)
+plotter(df, age_groups = "All", color = T, corrected = T)
 
 
 ### start plotting first three age groups

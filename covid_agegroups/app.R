@@ -15,6 +15,7 @@ ui <- fluidPage(
                         choices = c("All", levels(df$age_group)), selected = levels(df$age_group)[1],
                         multiple = T),
             selectizeInput(inputId = "bwcolor", label = "Color or Black and White?", choices = c("Color" = T, "Black and White" = F)),
+            selectizeInput(inputId = "correctyn", label = "Corrected data?", choices = c("Corrected" = T, "Not Corrected" = F)),
             hr(),
             hr(),
         ),
@@ -31,7 +32,7 @@ ui <- fluidPage(
 server <- function(input, output) {
 
     output$plotter_output <- renderPlotly({
-        plotter(df, age_groups = input$age_group_selector, color = input$bwcolor)
+        plotter(df, age_groups = input$age_group_selector, color = input$bwcolor, corrected = input$correctyn)
     })
 }
 
