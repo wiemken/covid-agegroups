@@ -231,7 +231,7 @@ pcorr<-ggplot(df.plot,
 
   
   ### save on desktop
-#ggsave(plot = pcorr, "~/Desktop/file_corrected.pdf", width=9, height=5)
+ggsave(plot = pcorr, "~/Desktop/file_corrected.pdf", width=9, height=5)
 
 ## plot corrected percent change
 pcorr_diff<-ggplot(df.plot,
@@ -268,6 +268,7 @@ pcorr_diff<-ggplot(df.plot,
                    "\nGrand Total:", format(total.kidsvax_corrected, big.mark = ",", scientific=F, digits=0)),
            size=3) 
 
+ggsave(plot = pcorr_diff, "~/Desktop/file_corrected_pct.pdf", width=9, height=5)
 
 
 
