@@ -62,7 +62,7 @@ p<-ggplot(df.plot,
     legend.key.width = unit(3, "line")
   ) +
   annotate(geom="text", x=as.Date("2020-06-22"), 
-           y=60000, 
+           y=300, 
            label=
              paste("Total 0-4 years:", format(total04, big.mark = ",", scientific=F, digits=0),
                    "\nTotal 5-11 years:", format(total511, big.mark = ",", scientific=F, digits=0),
