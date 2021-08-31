@@ -155,12 +155,12 @@ plotter <- function(data, corrected = F, age_groups, color = F){
             age_groups<-levels(data$age_group)
       }
       data <- data[data$age_group%in%c(age_groups),]
-      data$cases<-round(data$cases)
-      data$corrected_cases<-round(data$corrected_cases)
       dateVec <- seq(from = min(data$week), to = max(data$week), by = "weeks")
       if(color == T){
          if(corrected == F){yvar <- "cases"}
          if(corrected == T){yvar <- "corrected_cases"}
+         data[yvar]<-round(data[yvar])
+         brks <- c(seq(0, max(data[yvar]), by = (max(data[yvar])+(10000-max(data[yvar])%%10000))/15))
       p<-ggplot(data,
                 aes(linetype=age_group,
                     color = age_group,
@@ -175,8 +175,7 @@ plotter <- function(data, corrected = F, age_groups, color = F){
             geom_line(size=0.8) +
             ylab("Number of Cases \n") +
             xlab("\nWeek Ending") +
-            scale_y_continuous(label=comma, limits=c(0,max(data$cases)), breaks=c(seq(0, (max(data$cases)+(1000-max(data$cases)%%1000)),
-                                                                                      by = (max(data$cases)+(1000-max(data$cases)%%1000))/10))) +
+            scale_y_continuous(label=comma, limits=c(0,max(data[yvar])), breaks= brks) +
             scale_linetype_manual(name = "", values = c("solid", "longdash", "dotted","solid", "longdash", "dotted","solid", "longdash", "dotted","solid")) + 
             scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "#e9cb67", "5-11 Years" = "#e3bb42", "12-15 Years" = "#dbaa2e",
                                                                "16-17 Years" = "#937926", "18-29 Years" = "#00adad", "30-39 Years" = "#007574", "40-49 Years" = "#004848", "50-64 Years" = "#fcabd5",
@@ -196,6 +195,8 @@ plotter <- function(data, corrected = F, age_groups, color = F){
       if(color == F){
          if(corrected == F){yvar <- "cases"}
          if(corrected == T){yvar <- "corrected_cases"}
+         data[yvar]<-round(data[yvar])
+         brks <- c(seq(0, max(data[yvar]), by = (max(data[yvar])+(10000-max(data[yvar])%%10000))/15))
          p<-ggplot(data,
                    aes(linetype=age_group,
                        color = age_group,
@@ -209,8 +210,7 @@ plotter <- function(data, corrected = F, age_groups, color = F){
             geom_line(size=0.8) +
             ylab("Number of Cases \n") +
             xlab("\nWeek Ending") +
-            scale_y_continuous(label=comma, limits=c(0,max(data$cases)), breaks=c(seq(0, (max(data$cases)+(1000-max(data$cases)%%1000)),
-                                                                                      by = (max(data$cases)+(1000-max(data$cases)%%1000))/10))) +
+            scale_y_continuous(label=comma, limits=c(0,max(data[yvar])), breaks=brks) +
             scale_linetype_manual(name = "", values = c("solid", "longdash", "dotted","solid", "longdash", "dotted","solid", "longdash", "dotted","solid")) + 
             scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "#BEBEBE", "5-11 Years" = "#C0C0C0", "12-15 Years" = "#C8C8C8",
                                            "16-17 Years" = "#D0D0D0", "18-29 Years" = "#D3D3D3", "30-39 Years" = "#D8D8D8", "40-49 Years" = "#DCDCDC", "50-64 Years" = "#E0E0E0",
