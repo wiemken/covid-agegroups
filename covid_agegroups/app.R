@@ -4,6 +4,7 @@
 #------------------------------#
 #Libraries + Scripts
 library(shiny)
+library(DT)
 source("shiny_helpers.R")
 
 ui <- fluidPage(
@@ -21,7 +22,8 @@ ui <- fluidPage(
         mainPanel(
             br(),
             br(),
-            plotlyOutput('plotter_output', height = "750")
+            plotlyOutput('plotter_output', height = "750"),
+            dataTableOutput("datatable")
         ) 
     ) 
 ) 
@@ -31,6 +33,10 @@ server <- function(input, output) {
 
     output$plotter_output <- renderPlotly({
         plotter(df, age_groups = input$age_group_selector, color = input$bwcolor, corrected = input$correctyn)
+    })
+    
+    output$datatable <- DT::renderDataTable({
+         datatable(prepdatatable(df, age_groups = input$age_group_selector, corrected = input$correctyn), rownames = F)
     })
 }
 

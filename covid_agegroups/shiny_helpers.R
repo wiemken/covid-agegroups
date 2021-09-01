@@ -232,14 +232,33 @@ plotter <- function(data, corrected = F, age_groups, color = F){
 #plotter(df, age_groups = "All", color = T, corrected = T)
 
 prepdatatable <- function(data, corrected = F, age_groups){
+   names(data)<-c("Week", "0-4 Case Rate", "5-11 Case Rate", "12-15 Case Rate", "16-17 Case Rate", "18-29 Case Rate",
+                  "30-39 Case Rate", "40-49 Case Rate", "50-64 Case Rate", "65-74 Case Rate", "75+ Case Rate", "Year",
+                  "Age_Group", "Cases", "Corrected_Cases")
    if("All" %in% age_groups){
-      age_groups<-levels(data$age_group)
+      age_groups<-levels(data$Age_Group)
    }
-   data <- data[data$age_group%in%c(age_groups),]
-   return(data)
+   if(corrected == F){
+      data<-subset(data, select = -c(Corrected_Cases))
+      data <- data[data$Age_Group%in%c(age_groups),]
+      colz <- substr(age_groups, 1,3) 
+      data %>%
+         select(Week, starts_with(colz), Year, Age_Group, Cases) %>%
+         mutate(Cases = round(Cases)) -> data
+      return(data)
+   }
+   if(corrected == T){
+      data<-subset(data, select = -c(Cases))
+      data <- data[data$Age_Group%in%c(age_groups),]
+      colz <- substr(age_groups, 1,3) 
+      data %>%
+         select(Week, starts_with(colz), Year, Age_Group, Corrected_Cases) %>%
+         mutate(Corrected_Cases = round(Corrected_Cases)) -> data
+      return(data)
+   }
 }
-prepdatatable(df, age_groups = "5-11 Years")
 
+prepdatatable(df, corrected = F, "5-11 Years")
 
 ### start plotting first three age groups
 #df.plot <- df[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years"),]
