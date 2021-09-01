@@ -1,6 +1,6 @@
 #App will display output from shiny_helpers, have options to toggle BW/color, select certain age groups
 #------------------------------#
-#Add %difference plot, Add details in sidebar
+#Add details in sidebar
 #------------------------------#
 #Libraries + Scripts
 library(shiny)
@@ -26,7 +26,7 @@ ui <- fluidPage(
             br(),
             br(),
             uiOutput('plot_output', height = "750"),
-            dataTableOutput("datatable")
+            uiOutput("datatable")
         ) 
     ) 
 ) 
@@ -45,8 +45,15 @@ server <- function(input, output) {
         )
     })
     
-    output$datatable <- DT::renderDataTable({
-         datatable(prepdatatable(df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn), rownames = F)
+    output$datatable <- renderUI({
+        tagList(
+        fluidRow(
+            DT::renderDataTable(datatable(prepdatatable(df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week","Rate")), rownames = F))
+        ),
+        fluidRow(
+            DT::renderDataTable(datatable(prepdatatable(df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week","Age_Group","Cases","Percent_Diff")), rownames = F))
+        )
+        )
     })
     
     
