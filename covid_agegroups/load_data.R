@@ -131,6 +131,13 @@ df_shiny$corrected_cases[df_shiny$age_group=="50-64 Years"]<-df_shiny$cases[df_s
 df_shiny$corrected_cases[df_shiny$age_group=="65-74 Years"]<-df_shiny$cases[df_shiny$age_group=="65-74 Years"]*(1-0.0418)
 df_shiny$corrected_cases[df_shiny$age_group=="≥75 Years"]<-df_shiny$cases[df_shiny$age_group=="≥75 Years"]*(1-0.0279)
 
+### compute percent diff by age group
+df_shiny %>%
+      group_by(age_group) %>%
+      mutate(percent_difference_corrected = round((corrected_cases - lag(corrected_cases)) / corrected_cases *100,1),
+             percent_difference = round((cases - lag(cases)) / cases *100,1)) %>%
+      ungroup() ->> df_shiny
+
 #Compute totals for plot annotation on corrected counts
 # total04_corrected<-sum(df$corrected_cases[df$age_group=="0-4 Years"])
 # total511_corrected<-sum(df$corrected_cases[df$age_group=="5-11 Years"])
