@@ -267,7 +267,7 @@ pcorr_diff<-ggplot(df.plot,
                    "\nTotal 12-15 years:", format(total1215_corrected, big.mark = ",", scientific=F, digits=0),
                    "\nGrand Total:", format(total.kidsvax_corrected, big.mark = ",", scientific=F, digits=0)),
            size=3) 
-
+pcorr_diff
 ggsave(plot = pcorr_diff, "~/Desktop/file_corrected_pct.pdf", width=9, height=5)
 
 

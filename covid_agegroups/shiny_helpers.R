@@ -1,6 +1,6 @@
 #Script will create function to create color or BW output of age groups selected
 #------------------------------#
-#Make datatable prep function
+#Add % difference plot
 #------------------------------#
 #Libraries
 library(dplyr)
@@ -87,20 +87,20 @@ cases_2021 %>%
              age_75 = a75 * census$pop75[2]/100000
       ) -> cases_2021
 
-### bind together 2020 and 2021 
+#Bind together 2020 and 2021 
 df <- rbind(cases_2020, cases_2021)
 
-### pivot to long format for plotting
+#Pivot to long format for plotting
 df %>%
       pivot_longer(cols = starts_with("age"), names_to = "age_group", values_to = "cases") -> df
 
-### factor age group to ensure proper arrangement
+#Factor age group to ensure proper arrangement
 df$age_group <- factor(df$age_group, levels = c("age_0_4", "age_5_11", "age_12_15", "age_16_17", "age_18_29", "age_30_39", "age_40_49", "age_50_64", "age_65_74", "age_75"), 
                        labels = c("0-4 Years", "5-11 Years", "12-15 Years", "16-17 Years", "18-29 Years", "30-39 Years", "40-49 Years", "50-64 Years", "65-74 Years", "≥75 Years"))
-### ensure 'week' column is date format
+#Ensure 'week' column is date format
 df$week <- as.Date(df$week)
 
-### compute totals for plot annotation
+#Compute totals for plot annotation
 total04<-sum(df$cases[df$age_group=="0-4 Years"])
 total511<-sum(df$cases[df$age_group=="5-11 Years"])
 total1215<-sum(df$cases[df$age_group=="12-15 Years"])
@@ -117,7 +117,7 @@ total.kidsvax <- sum(df$cases[df$age_group%in%c("0-4 Years", "5-11 Years", "12-1
 total.adultswokidsvax <- sum(df$cases[df$age_group%nin%c("0-4 Years", "5-11 Years")])
 total.adultswithkidsvax <- sum(df$cases[df$age_group%nin%c("0-4 Years", "5-11 Years", "12-15 Years")])
 
-### correct counts  using percent over/under estimate from CDC data overall
+#Correct counts  using percent over/under estimate from CDC data overall
 ## https://covid.cdc.gov/covid-data-tracker/#demographics
 df$corrected_cases<-NA
 df$corrected_cases[df$age_group=="0-4 Years"]<-df$cases[df$age_group=="0-4 Years"]*(1-0.0242)
@@ -131,25 +131,25 @@ df$corrected_cases[df$age_group=="50-64 Years"]<-df$cases[df$age_group=="50-64 Y
 df$corrected_cases[df$age_group=="65-74 Years"]<-df$cases[df$age_group=="65-74 Years"]*(1-0.0418)
 df$corrected_cases[df$age_group=="≥75 Years"]<-df$cases[df$age_group=="≥75 Years"]*(1-0.0279)
 
-### compute totals for plot annotation on corrected counts
-total04_corrected<-sum(df$corrected_cases[df$age_group=="0-4 Years"])
-total511_corrected<-sum(df$corrected_cases[df$age_group=="5-11 Years"])
-total1215_corrected<-sum(df$corrected_cases[df$age_group=="12-15 Years"])
-total1617_corrected<-sum(df$corrected_cases[df$age_group=="16-17 Years"])
-total1829_corrected<-sum(df$corrected_cases[df$age_group=="18-29 Years"])
-total3039_corrected<-sum(df$corrected_cases[df$age_group=="30-39 Years"])
-total4049_corrected<-sum(df$corrected_cases[df$age_group=="40-49 Years"])
-total5064_corrected<-sum(df$corrected_cases[df$age_group=="50-64 Years"])
-total6574_corrected<-sum(df$corrected_cases[df$age_group=="65-74 Years"])
-total75_corrected<-sum(df$corrected_cases[df$age_group=="≥75 Years"])
-total.overall_corrected <- sum(df$corrected_cases)
-total.kidsunvax_corrected <- sum(df$corrected_cases[df$age_group%in%c("0-4 Years", "5-11 Years")])
-total.kidsvax_corrected <- sum(df$corrected_cases[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years")])
-total.adultswokidsvax <- sum(df$corrected_cases[df$age_group%nin%c("0-4 Years", "5-11 Years")])
-total.adultswithkidsvax <- sum(df$corrected_cases[df$age_group%nin%c("0-4 Years", "5-11 Years", "12-15 Years")])
+#Compute totals for plot annotation on corrected counts
+# total04_corrected<-sum(df$corrected_cases[df$age_group=="0-4 Years"])
+# total511_corrected<-sum(df$corrected_cases[df$age_group=="5-11 Years"])
+# total1215_corrected<-sum(df$corrected_cases[df$age_group=="12-15 Years"])
+# total1617_corrected<-sum(df$corrected_cases[df$age_group=="16-17 Years"])
+# total1829_corrected<-sum(df$corrected_cases[df$age_group=="18-29 Years"])
+# total3039_corrected<-sum(df$corrected_cases[df$age_group=="30-39 Years"])
+# total4049_corrected<-sum(df$corrected_cases[df$age_group=="40-49 Years"])
+# total5064_corrected<-sum(df$corrected_cases[df$age_group=="50-64 Years"])
+# total6574_corrected<-sum(df$corrected_cases[df$age_group=="65-74 Years"])
+# total75_corrected<-sum(df$corrected_cases[df$age_group=="≥75 Years"])
+# total.overall_corrected <- sum(df$corrected_cases)
+# total.kidsunvax_corrected <- sum(df$corrected_cases[df$age_group%in%c("0-4 Years", "5-11 Years")])
+# total.kidsvax_corrected <- sum(df$corrected_cases[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years")])
+# total.adultswokidsvax <- sum(df$corrected_cases[df$age_group%nin%c("0-4 Years", "5-11 Years")])
+# total.adultswithkidsvax <- sum(df$corrected_cases[df$age_group%nin%c("0-4 Years", "5-11 Years", "12-15 Years")])
 
 #------------------------------ End Cleaning ------------------------------#
-#Begin function
+#Begin functions
 plotter <- function(data, corrected = F, age_groups, color = F){
       if("All" %in% age_groups){
             age_groups<-levels(data$age_group)
@@ -229,8 +229,6 @@ plotter <- function(data, corrected = F, age_groups, color = F){
       }
 }
 
-#plotter(df, age_groups = "All", color = T, corrected = T)
-
 prepdatatable <- function(data, corrected = F, age_groups){
    names(data)<-c("Week", "0-4 Case Rate", "5-11 Case Rate", "12-15 Case Rate", "16-17 Case Rate", "18-29 Case Rate",
                   "30-39 Case Rate", "40-49 Case Rate", "50-64 Case Rate", "65-74 Case Rate", "75+ Case Rate", "Year",
@@ -258,70 +256,5 @@ prepdatatable <- function(data, corrected = F, age_groups){
    }
 }
 
-prepdatatable(df, corrected = F, "5-11 Years")
 
-### start plotting first three age groups
-#df.plot <- df[df$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years"),]
-### plot clustered bar graph
-# p<-ggplot(df.plot,
-#           aes(linetype=age_group, 
-#               y=cases, 
-#               x=week)) + 
-#       geom_line(size=0.8) +
-#       ylab("Number of Cases \n") +
-#       xlab("\nWeek Ending") +
-#       scale_y_continuous(label=comma, limits=c(0,70000), breaks=c(seq(0,70000, by=10000))) +
-#       scale_linetype_manual(name = "Age Group", values = c("solid", "longdash", "dotted")) +
-#       #scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "gray90", "5-11 Years" = "gray70", "12-15 Years" = "black")) +
-#       scale_x_date(date_breaks = "3 weeks",  limits = c(min(df.plot$week), max = max(df.plot$week)), expand=c(0.02,0.02)) +
-#       theme(
-#             panel.background = element_blank(),
-#             axis.line = element_line(color = "darkgray"),
-#             axis.text.x = element_text(angle = 90),
-#             legend.key=element_blank(),
-#             legend.background=element_blank(),
-#             legend.position = "right",
-#             legend.key.width = unit(3, "line")
-#       ) +
-#       annotate(geom="text", x=as.Date("2020-06-22"), 
-#                y=60000, 
-#                label=
-#                      paste("Total 0-4 years:", format(total04, big.mark = ",", scientific=F, digits=0),
-#                            "\nTotal 5-11 years:", format(total511, big.mark = ",", scientific=F, digits=0),
-#                            "\nTotal 12-15 years:", format(total1215, big.mark = ",", scientific=F, digits=0),
-#                            "\nGrand Total:", format(total.kidsvax, big.mark = ",", scientific=F, digits=0)),
-#                size=3) 
-# #p  
-# #ggsave(plot = p, "~/Desktop/file.pdf", width=9, height=5)
-# 
-# ## plot corrected
-# pcorr<-ggplot(df.plot,
-#               aes(linetype=age_group, 
-#                   y=corrected_cases, 
-#                   x=week)) + 
-#       geom_line(size=0.8) +
-#       ylab("Number of Cases \n") +
-#       xlab("\nWeek Ending") +
-#       scale_y_continuous(label=comma, limits=c(0,70000), breaks=c(seq(0,70000, by=10000))) +
-#       scale_linetype_manual(name = "Age Group", values = c("solid", "longdash", "dotted")) +
-#       #scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "gray90", "5-11 Years" = "gray70", "12-15 Years" = "black")) +
-#       scale_x_date(date_breaks = "3 weeks",  limits = c(min(df.plot$week), max = max(df.plot$week)), expand=c(0.02,0.02)) +
-#       theme(
-#             panel.background = element_blank(),
-#             axis.line = element_line(color = "darkgray"),
-#             axis.text.x = element_text(angle = 90),
-#             legend.key=element_blank(),
-#             legend.background=element_blank(),
-#             legend.position = "right",
-#             legend.key.width = unit(3, "line")
-#       ) +
-#       annotate(geom="text", x=as.Date("2020-06-22"), 
-#                y=60000, 
-#                label=
-#                      paste("Total 0-4 years:", format(total04_corrected, big.mark = ",", scientific=F, digits=0),
-#                            "\nTotal 5-11 years:", format(total511_corrected, big.mark = ",", scientific=F, digits=0),
-#                            "\nTotal 12-15 years:", format(total1215_corrected, big.mark = ",", scientific=F, digits=0),
-#                            "\nGrand Total:", format(total.kidsvax_corrected, big.mark = ",", scientific=F, digits=0)),
-#                size=3) 
-# 
 

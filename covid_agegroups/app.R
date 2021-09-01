@@ -1,6 +1,6 @@
 #App will display output from shiny_helpers, have options to toggle BW/color, select certain age groups
 #------------------------------#
-#Add datatable with cases by age group, Add details in sidebar
+#Add %difference plot, Add details in sidebar
 #------------------------------#
 #Libraries + Scripts
 library(shiny)
@@ -38,6 +38,8 @@ server <- function(input, output) {
     output$datatable <- DT::renderDataTable({
          datatable(prepdatatable(df, age_groups = input$age_group_selector, corrected = input$correctyn), rownames = F)
     })
+    
+    
 }
 
 # Run the application 
