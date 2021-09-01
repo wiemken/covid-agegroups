@@ -1,6 +1,6 @@
 #Script will create functions to be used in Shiny app
 #------------------------------#
-#Add % difference plot
+#
 #------------------------------#
 #Libraries
 library(dplyr)
@@ -185,9 +185,6 @@ plotterpct <- function(data, corrected = F, age_groups, color = F){
    }
 }
 
-#plotterpct(df_shiny, corrected = T, "All", color = F)
-
-
 prepdatatable <- function(data, corrected = F, age_groups, sub){
    names(data)<-c("Week", "0-4 Case Rate", "5-11 Case Rate", "12-15 Case Rate", "16-17 Case Rate", "18-29 Case Rate",
                   "30-39 Case Rate", "40-49 Case Rate", "50-64 Case Rate", "65-74 Case Rate", "75+ Case Rate", "Year",
@@ -198,9 +195,9 @@ prepdatatable <- function(data, corrected = F, age_groups, sub){
    if(corrected == F){
       data<-subset(data, select = -c(Corrected_Cases, Percent_Difference_Corrected))
       data <- data[data$Age_Group%in%c(age_groups),]
-      colz <- substr(age_groups, 1,3) 
+      colz <- grep("\\d", names(data), value = T)
       data %>%
-         select(Week, starts_with(colz), Age_Group, Cases, Percent_Difference) %>%
+         select(Week, all_of(colz), Age_Group, Cases, Percent_Difference) %>%
          mutate(Cases = round(Cases)) -> data
       data <- data[names(data)[names(data)%in%grep(paste(sub, collapse = "|"),names(data), value = T)]]
       return(data)
@@ -208,9 +205,9 @@ prepdatatable <- function(data, corrected = F, age_groups, sub){
    if(corrected == T){
       data<-subset(data, select = -c(Cases, Percent_Difference))
       data <- data[data$Age_Group%in%c(age_groups),]
-      colz <- substr(age_groups, 1,3) 
+      colz <- grep("\\d", names(data), value = T)
       data %>%
-         select(Week, starts_with(colz), Age_Group, Corrected_Cases, Percent_Difference_Corrected) %>%
+         select(Week, all_of(colz), Age_Group, Corrected_Cases, Percent_Difference_Corrected) %>%
          mutate(Corrected_Cases = round(Corrected_Cases)) -> data
       data <- data[names(data)[names(data)%in%grep(paste(sub, collapse = "|"),names(data), value = T)]]
       return(data)

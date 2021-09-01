@@ -11,15 +11,15 @@ source("load_data.R")
 ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(width = 3,
-            strong("COVID-19 Age Groups"),
+            strong("Estimating COVID-19 Case Counts Over Time"),
             hr(),
-            radioButtons(inputId = "pctchange", label = "View cases or Pct change plot?", choices = c("Cases" = F, "Pct Change" = T)),
-            radioButtons(inputId = "bwcolor", label = "Color or Black and White?", choices = c("Color" = T, "Black and White" = F)),
-            selectizeInput(inputId = "age_group_selector", label = "Age",
+            radioButtons(inputId = "pctchange", label = "Plot type?", choices = c("Cases" = F, "Percentage Change" = T)),
+            radioButtons(inputId = "bwcolor", label = "Plot color scheme?", choices = c("Color" = T, "Black and White" = F)),
+            selectizeInput(inputId = "age_group_selector", label = "Age? (Select all that apply, selecting 'All' will override all other choices",
                         choices = c("All", levels(df_shiny$age_group)), selected = levels(df_shiny$age_group)[1],
                         multiple = T),
             
-            selectizeInput(inputId = "correctyn", label = "Corrected data?", choices = c("Corrected" = T, "Not Corrected" = F))
+            selectizeInput(inputId = "correctyn", label = "Type of data to analyze", choices = c("Corrected" = T, "Not Corrected" = F))
         ),
         
         mainPanel(
@@ -50,6 +50,7 @@ server <- function(input, output) {
         fluidRow(
             DT::renderDataTable(datatable(prepdatatable(df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week","Rate")), rownames = F))
         ),
+        hr(),
         fluidRow(
             DT::renderDataTable(datatable(prepdatatable(df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week","Age_Group","Cases","Percent_Diff")), rownames = F))
         )
