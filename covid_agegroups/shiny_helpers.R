@@ -229,7 +229,16 @@ plotter <- function(data, corrected = F, age_groups, color = F){
       }
 }
 
-plotter(df, age_groups = "All", color = T, corrected = T)
+#plotter(df, age_groups = "All", color = T, corrected = T)
+
+prepdatatable <- function(data, corrected = F, age_groups){
+   if("All" %in% age_groups){
+      age_groups<-levels(data$age_group)
+   }
+   data <- data[data$age_group%in%c(age_groups),]
+   return(data)
+}
+prepdatatable(df, age_groups = "5-11 Years")
 
 
 ### start plotting first three age groups
