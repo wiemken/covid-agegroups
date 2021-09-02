@@ -51,7 +51,7 @@ server <- function(input, output) {
     output$datatable <- renderUI({
         tagList(
         fluidRow(
-            DT::renderDataTable(datatable(prepdatatable(df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week","Rate")), rownames = F))
+            DT::renderDataTable(datatable(prepdatatable(df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week","Case Rate")), rownames = F))
         ),
         hr(),
         fluidRow(
