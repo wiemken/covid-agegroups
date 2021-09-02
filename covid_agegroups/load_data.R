@@ -51,6 +51,15 @@ cases <-rio::import("https://github.com/wiemken/covid-agegroups/blob/main/case_d
 cases %>%
       mutate(year = lubridate::year(week)) ->cases
 
+cases %>%
+   pivot_longer(cols = starts_with("a"), names_to = "age_group", values_to = "cases") ->> df_shiny_rate
+
+#Factor age group to ensure proper arrangement
+df_shiny_rate$age_group <- factor(df_shiny_rate$age_group, levels = c("a0_4", "a5_11", "a12_15", "a16_17", "a18_29", "a30_39", "a40_49", "a50_64", "a65_74", "a75"), 
+                             labels = c("0-4 Years", "5-11 Years", "12-15 Years", "16-17 Years", "18-29 Years", "30-39 Years", "40-49 Years", "50-64 Years", "65-74 Years", "≥75 Years"))
+#Ensure 'week' column is date format
+df_shiny_rate$week <- as.Date(df_shiny_rate$week)
+
 ############################################################
 #################### EDIT  #################################
 ############################################################
@@ -99,6 +108,9 @@ df_shiny$age_group <- factor(df_shiny$age_group, levels = c("age_0_4", "age_5_11
                        labels = c("0-4 Years", "5-11 Years", "12-15 Years", "16-17 Years", "18-29 Years", "30-39 Years", "40-49 Years", "50-64 Years", "65-74 Years", "≥75 Years"))
 #Ensure 'week' column is date format
 df_shiny$week <- as.Date(df_shiny$week)
+
+
+
 
 #Compute totals for plot annotation
 total04<-sum(df_shiny$cases[df_shiny$age_group=="0-4 Years"])

@@ -13,7 +13,7 @@ ui <- fluidPage(
         sidebarPanel(width = 3,
             strong("Estimating COVID-19 Case Counts Over Time"),
             hr(),
-            radioButtons(inputId = "pctchange", label = "Plot type?", choices = c("Cases" = F, "Percentage Change" = T)),
+            radioButtons(inputId = "pctchange", label = "Plot type?", choices = c("Cases" = 1, "Percentage Change" = 2, "Rate Per 100,000" = 3)),
             radioButtons(inputId = "bwcolor", label = "Plot color scheme?", choices = c("Color" = T, "Black and White" = F)),
             selectizeInput(inputId = "age_group_selector", label = "Age? (Select all that apply, selecting 'All' will override all other choices",
                         choices = c("All", levels(df_shiny$age_group)), selected = levels(df_shiny$age_group)[1],
@@ -36,11 +36,14 @@ server <- function(input, output) {
 
     output$plot_output <- renderUI({
         tagList(
-        if(input$pctchange == F){
+        if(input$pctchange == 1){
             renderPlotly(plotter(df_shiny, age_groups = input$age_group_selector, color = input$bwcolor, corrected = input$correctyn))
         },
-        if(input$pctchange == T){
+        if(input$pctchange == 2){
             renderPlotly(plotterpct(df_shiny, age_groups = input$age_group_selector, color = input$bwcolor, corrected = input$correctyn))
+        },
+        if(input$pctchange == 3){
+            renderPlotly(plotterrate(df_shiny_rate, age_groups = input$age_group_selector, color = input$bwcolor))
         }
         )
     })
