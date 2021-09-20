@@ -1,0 +1,7 @@
+#What extensions to ignore
+######################
+.DS_Store
+.DS_Store?
+.xlsx
+.dcf
+.csv

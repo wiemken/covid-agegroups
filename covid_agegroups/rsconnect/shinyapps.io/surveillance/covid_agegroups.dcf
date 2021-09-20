@@ -5,9 +5,16 @@ account: surveillance
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4565440
+<<<<<<< HEAD
 bundleId: 4993506
 url: https://surveillance.shinyapps.io/covid_agegroups/
 when: 1630595919.01202
 lastSyncTime: 1630595919.01204
+=======
+bundleId: 4994098
+url: https://surveillance.shinyapps.io/covid_agegroups/
+when: 1630608575.55007
+lastSyncTime: 1630608575.55009
+>>>>>>> 4fff0862cbbc157e4665588bee6c58526df4d9b8
 asMultiple: FALSE
 asStatic: FALSE
