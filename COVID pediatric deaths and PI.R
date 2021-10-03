@@ -17,7 +17,8 @@ df %>%
            age_group%in%c("Under 1 year", "1-4 years", "5-14 years")) -> df
 
 
-
+## covid hosp: covid.cdc.gov/covid-data-trackjer/#new-hospital-admissions - extract with text sniper into csv
+df <- read_excel("/Users/timwiemken/Library/Mobile Documents/com~apple~CloudDocs/Work/Pfizer/COVID pediatric case count/count github/covid-agegroups/ped hosp.xlsx")
 ### flu hospitalizations:  https://gis.cdc.gov/GRASP/Fluview/FluHospRates.html
 df <- vroom("https://raw.githubusercontent.com/wiemken/covid-agegroups/main/FluSurveillance_Custom_Download_Data.csv")
 
