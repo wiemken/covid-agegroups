@@ -70,6 +70,6 @@ p<-ggplot(df.plot,
   #                  "\nGrand Total:", format(total.kidsvax, big.mark = ",", scientific=F, digits=0)),
   #          size=3) 
 p 
-ggsave(plot = p, "C:/Users/Wiemkt/OneDrive - Pfizer/Desktop/file.pdf", width=9, height=5)
+ggsave(plot = p, "C:/Users/Wiemkt/OneDrive - Pfizer/Desktop/file.jpg", width=9, height=5)
 
 

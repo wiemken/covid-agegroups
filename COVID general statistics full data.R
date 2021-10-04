@@ -111,3 +111,6 @@ df %>%
 
 17879/62566 #(total hospitalizations from : https://covid.cdc.gov/covid-data-tracker/#new-hospital-admissions  on Oct 4, 2021
   
+
+
+
