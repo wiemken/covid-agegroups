@@ -118,4 +118,36 @@ old<- df[66:74,]
 #470.0716 % increase
 
 
+## 2) Percent covid cases 5-1 aug/sep
+
+  ## same data as above for "new" versus total
+  
+  ## total
+new <- data.frame(new)
+
+new$rowsumz <- rowSums(new[,c(13:22)])
+
+sum(new$rowsumz) ## this is total cases
+
+519291.2/5332439    ## 519291.2 computed in #1 as total cases in 5-11 in aug/sep
+# 0.09738343 = 10%
+
+
+
+## 3) of all <18, what % is 5-11
+
+## same data
+
+total_lt_18 <- rowSums(new[,13:16])
+
+sum(total_lt_18)  ### total <18 aug/sep 1261500
+
+519291.2/1261500  #519291.2 from #1 as total 5-11 aug/sep
+## 0.4116458 = 41%
+
+
+
+### 4) prop peds hospitlaizations through end of sep 2021 in 5-11
+
+
 
