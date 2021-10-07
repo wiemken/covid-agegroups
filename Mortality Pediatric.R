@@ -9,7 +9,7 @@ library(RSocrata)
 library(janitor)
 
 url <- "https://data.cdc.gov/resource/nr4s-juj3.csv"
-df <- read.socrata(
+df2 <- read.socrata(
   url,
   app_token = 'chCxsk4zel6QXbaemotF65C9L',
   email     = "tim.wiemken@gmail.com",
