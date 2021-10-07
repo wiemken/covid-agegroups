@@ -254,18 +254,48 @@ df$cases <- as.numeric(as.character(apply(df[,c(19:28)], 1, function(x) paste(x[
 ## total cases 5-11 Aug/sep
 sum(df$cases[df$age_category == "5-11  yr" & df$mmwr_week %in%c(31:39) & df$year==2021])
 
-## total 5-11 = 2212.768
+## total 5-11 in aug/sep= 2212.768
 
 sum(df$cases[df$mmwr_week %in%c(31:39) & df$year==2021])
 
-## total: 310773.9
+## total in aug sep: 310773.9
 
-## prop 5-11 = 
+## prop 5-11 in aug sep= 
 2212.768 / 310773.9 #  0.007120186 = .7%
 
-## prop hosp of <18
+## prop hosp of <18 in aug sep
 sum(df$cases[df$age_category%in%c("0-4 yr", "5-11  yr", "12-17 yr") & df$mmwr_week %in%c(31:39) & df$year==2021])
 
-# 9428.536 total hosp <18
+# 9428.536 total hosp  in au sep <18
 2212.768 / 9428.536 # = 0.2346884, 23%
+
+
+
+
+## same jun/jul
+sum(df$cases[df$age_category == "5-11  yr" & df$mmwr_week %in%c(23:30) & df$year==2021])
+
+## total 5-11 in jun/jul= 539.0075
+
+sum(df$cases[df$mmwr_week %in%c(23:30) & df$year==2021])
+
+## total in jun/jul: 80988.8
+
+## prop 5-11 in jun/jul= 
+539.0075 / 80988.8 #  0.006655334 = .7%
+
+## prop hosp of <18 in jun/jul
+sum(df$cases[df$age_category%in%c("0-4 yr", "5-11  yr", "12-17 yr") & df$mmwr_week %in%c(23:30) & df$year==2021])
+
+# 2438.471 total hosp  in jun/jul<18
+539.0075 / 2438.471 # = 0.2210432, 22%
+
+
+
+### pct increase jun/jul to aug sep
+
+(2212.768 - 539.0075) / 2212.768 ## 0.7564103 = 75%
+
+
+
 
