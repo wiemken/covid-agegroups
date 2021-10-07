@@ -11,7 +11,17 @@ library(zoo)
 
 ### data: https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data-with-Ge/n8mc-b4w4
 df <- vroom("C:/Users/Wiemkt/OneDrive - Pfizer/Documents/Research/Public Datasets/COVID/COVID-19_Case_Surveillance_Public_Use_Data_with_Geography.csv")
-names(df)
+
+df %>%
+  filter(age_group != "Missing",
+         hosp_yn %in%c("Yes", "No")) -> john
+
+john %>%
+  group_by(age_group) %>%
+  summarise(
+    total.cases = n(),
+    hosp = tally(hosp_yn=="Yes") -> test
+  )
 
 
 #### figure out pediatric case increase before/after current 2 months
@@ -45,6 +55,20 @@ df %>%
 3554571/28760859
 # 0.1235906
 
+### if just jun/jul (before) to aug/sep (after)
+## after is same.
+df %>%
+  filter(moyr >= "2021-06") %>%
+  group_by(cuts) %>%
+  summarise(n()) # 1448652 - total cases after
+
+df %>%
+  filter(moyr >= "2021-06",
+         age_group%in%c("0 - 17 years")) %>%
+  group_by(cuts) %>%
+  summarise(n())
+
+234420/1073634
 
 ###########################################################################
 ###########################################################################
