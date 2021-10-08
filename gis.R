@@ -42,18 +42,18 @@ pops %>%
          age <18
          ) %>%
   select(name, age, popest2019_civ) -> pops
+
 ### sum cases by age group of interest; 0-4, 5-11, 12-15, 16-17
 pops %>%
   mutate(
-    age.0_4 <- ifelse(age <=4,1,0),
-    age.5_11 <- ifelse(age <=4,1,0),
-    age.12_15 <- ifelse(age <=4,1,0),
-    
-  )
-  group_by(name) %>%
+    age_ = ifelse(age <=4, 1, 
+                  ifelse(age >=5 & age <=11,2,
+                         ifelse(age >=12 & age <=15,3,4)))
+  ) %>%
+  group_by(name, age_) %>%
   summarise(
-    pop.0_4 <- sum()
-  )
+    pops = sum(popest2019_civ)
+  ) -> pops2
 
 
 ###==============================================================
@@ -76,6 +76,8 @@ df$age_group <- factor(df$age_group)
 df %>%
   group_by(res_state) %>%
   summarise(total_cases = n()) -> cases
+
+cases <- merge(cases, pops2)
 ###==============================================================
 ###==============================================================
 
