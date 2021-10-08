@@ -101,6 +101,13 @@ df <- rbind(cases_2020, cases_2021)
 
 df$moyr <- zoo::as.yearmon(as.Date(df$week))
 
+### total cases 5-11
+sum(df$age_5_11[-nrow(df)])
+# 1,711,164
+# 1,653,603  ## without 
+
+1700000/28368818*100000  ##incidence 
+  
 ## total cases 5-11 Aug/sep
 new <- df[75:82,]
   sum(new$age_5_11)
@@ -248,6 +255,19 @@ cases_2021 %>%
 df <- rbind(cases_2020, cases_2021)
 
 df$cases <- as.numeric(as.character(apply(df[,c(19:28)], 1, function(x) paste(x[!is.na(x)], collapse = ", "))))
+
+### total cases 5-11
+sum(df$cases[df$age_category == "5-11  yr"], na.rm=T)
+### total cases
+sum(df$cases, na.rm=T)
+8622.211/2398703 ## this number is smaller but reasonably close to website.
+#0.00359453
+
+8622.211/28368818 *100000 ### incidence rate (pop from 2021 census file)
+
+## pct cases in past 2 months
+2213 / 8622.211 ## 26%
+
 
 #week numbers aug/sep 2021 = 31:39 from: https://www.epochconverter.com/weeks/2021
 ## jun/jul 2021 = 23:30
