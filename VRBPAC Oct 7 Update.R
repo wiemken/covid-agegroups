@@ -50,6 +50,7 @@ census %>%
 cases <-rio::import("https://github.com/wiemken/covid-agegroups/blob/main/case_data.xlsx?raw=true")
 cases %>%
   mutate(year = lubridate::year(week)) ->cases
+dput(names(cases))
 
 cases %>%
   pivot_longer(cols = starts_with("a"), names_to = "age_group", values_to = "cases") ->> df_shiny_rate
