@@ -159,7 +159,7 @@ sum(total_lt_18)  ### total <18 aug/sep 1261500
 
 
 #Load in US Census data estimates from: https://www.census.gov/data/datasets/2017/demo/popproj/2017-popproj.html
-census <- vroom("https://www2.census.gov/programs-surveys/popproj/datasets/2017/2017-popproj/np2017_d1_mid.csv")
+census <- vroom::vroom("https://www2.census.gov/programs-surveys/popproj/datasets/2017/2017-popproj/np2017_d1_mid.csv")
 
 ### Clean names with janitor::clean_names
 ### sex, origin, race == 0 represents all categories combined
@@ -184,8 +184,10 @@ census %>%
     pop_vax = sum(pop_12, pop_13, pop_14, pop_15, pop_16, pop_17,  pop_18, pop_19, pop_20, pop_21, pop_22, pop_23, pop_24, pop_25, pop_26, pop_27, pop_28, pop_29, pop_30, pop_31, pop_32, pop_33, pop_34, pop_35, pop_36, pop_37, pop_38, pop_39,pop_40, pop_41, pop_42, pop_43, pop_44, pop_45, pop_46, pop_47, pop_48, pop_49,pop_50, pop_51, pop_52, pop_53, pop_54, pop_55, pop_56, pop_57, pop_58, pop_59, pop_60, pop_61, pop_62, pop_63, pop_64,pop_65, pop_66, pop_67, pop_68, pop_69, pop_70, pop_71, pop_72, pop_73, pop_74, pop_75, pop_76, pop_77, pop_78, pop_79, pop_80, pop_81, pop_82, pop_83, pop_84, pop_85, pop_86, pop_87, pop_88, pop_89, pop_90, pop_91, pop_92, pop_93, pop_94, pop_95, pop_96, pop_97, pop_98, pop_99, pop_100)
   )  -> census
 
+### hosp data from: https://covid.cdc.gov/covid-data-tracker/#covidnet-hospitalization-network
 
-df <- vroom("https://raw.githubusercontent.com/wiemken/covid-agegroups/main/COVID-19Surveillance_All_Data%20copy.csv")
+library(tidyverse)
+df <- vroom::vroom("https://raw.githubusercontent.com/wiemken/covid-agegroups/main/COVID-19Surveillance_All_Data%20copy.csv")
 df %>%
   janitor::clean_names() %>%
   filter(catchment == "Entire Network",

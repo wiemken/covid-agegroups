@@ -42,6 +42,6 @@ row.names(df) <- seq(1:nrow(df))
 
 df$cases <- round(as.numeric(df$cumulative_rate)*pop/100000,0)
 keep <- seq(0,360, by=30)[-1]
-median(df[keep,"cases"], na.rm=T)
+mean(df[keep,"cases"], na.rm=T)
   
         
