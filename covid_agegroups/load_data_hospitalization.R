@@ -1,6 +1,7 @@
 library(rio)
 library(tidyverse)
 library(vroom)
+library(MMWRweek)
 
 #Load in US Census data estimates from: https://www.census.gov/data/datasets/2017/demo/popproj/2017-popproj.html
 census_hosp <- vroom::vroom("https://www2.census.gov/programs-surveys/popproj/datasets/2017/2017-popproj/np2017_d1_mid.csv")
@@ -55,7 +56,13 @@ cases_hosp %>%
 #Factor age group to ensure proper arrangement
 df_shiny_rate_hosp$age_group <- factor(df_shiny_rate_hosp$age_category, 
                                   levels = c("0-4 yr", "5-11  yr", "12-17 yr", "18-29 yr", "30-39 yr", "40-49 yr", "50-64 yr", "65-74 yr", "75-84 yr", "85+"), 
-                                  labels = c("a0_4Years", "a5_11Years", "a12_17Years", "a18_29Years", "a30_39Years", "a40_49Years", "a50_64Years", "a65_74Years", "a75_84Years", "a85Years"))
+                                  labels = c("a0_4", "a5_11", "a12_17", "a18_29", "a30_39", "a40_49", "a50_64", "a65_74", "a75_84", "a85"))
+
+## create week ending
+df_shiny_rate_hosp$week <- MMWRweek::MMWRweek2Date(MMWRyear=df_shiny_rate_hosp$year,MMWRweek=df_shiny_rate_hosp$mmwr_week)
+
+df_shiny_rate_hosp<- df_shiny_rate_hosp[,c("week", "year", "age_group", "cases" = "weekly_rate")]
+
 
 ############################################################
 #################### EDIT  #################################
@@ -73,32 +80,33 @@ cases_2020_hosp %>%
 cases_2021_hosp %>%
   pivot_wider(names_from = age_group, values_from = weekly_rate) -> cases_2021_hosp
 
+
+
 cases_2020_hosp %>%
-  mutate(age_0_4 = a0_4Years * census_hosp$pop0_4[1]/100000,
-         age_5_11 = a5_11Years * census_hosp$pop5_11[1]/100000,
-         age_12_17 = a12_17Years * census_hosp$pop12_17[1]/100000,
-         age_18_29 = a18_29Years * census_hosp$pop18_29[1]/100000,
-         age_30_39 = a30_39Years * census_hosp$pop30_39[1]/100000,
-         age_40_49 = a40_49Years * census_hosp$pop40_49[1]/100000,
-         age_50_64 = a50_64Years * census_hosp$pop50_64[1]/100000,
-         age_65_74 = a65_74Years * census_hosp$pop65_74[1]/100000,
-         age_75_84 = a75_84Years * census_hosp$pop75_84[1]/100000,
-         age_85 = a85Years * census_hosp$pop85[1]/100000
+  mutate(age_0_4 = a0_4 * census_hosp$pop0_4[1]/100000,
+         age_5_11 = a5_11 * census_hosp$pop5_11[1]/100000,
+         age_12_17 = a12_17 * census_hosp$pop12_17[1]/100000,
+         age_18_29 = a18_29 * census_hosp$pop18_29[1]/100000,
+         age_30_39 = a30_39 * census_hosp$pop30_39[1]/100000,
+         age_40_49 = a40_49 * census_hosp$pop40_49[1]/100000,
+         age_50_64 = a50_64 * census_hosp$pop50_64[1]/100000,
+         age_65_74 = a65_74 * census_hosp$pop65_74[1]/100000,
+         age_75_84 = a75_84 * census_hosp$pop75_84[1]/100000,
+         age_85 = a85 * census_hosp$pop85[1]/100000
   ) -> cases_2020_hosp
 cases_2021_hosp %>%
-  mutate(age_0_4 = a0_4Years * census_hosp$pop0_4[2]/100000,
-         age_5_11 = a5_11Years * census_hosp$pop5_11[2]/100000,
-         age_12_17 = a12_17Years * census_hosp$pop12_17[2]/100000,
-         age_18_29 = a18_29Years * census_hosp$pop18_29[2]/100000,
-         age_30_39 = a30_39Years * census_hosp$pop30_39[2]/100000,
-         age_40_49 = a40_49Years * census_hosp$pop40_49[2]/100000,
-         age_50_64 = a50_64Years * census_hosp$pop50_64[2]/100000,
-         age_65_74 = a65_74Years * census_hosp$pop65_74[2]/100000,
-         age_75_84 = a75_84Years * census_hosp$pop75_84[2]/100000,
-         age_85 = a85Years * census_hosp$pop85[2]/100000
+  mutate(age_0_4 = a0_4 * census_hosp$pop0_4[2]/100000,
+         age_5_11 = a5_11 * census_hosp$pop5_11[2]/100000,
+         age_12_17 = a12_17 * census_hosp$pop12_17[2]/100000,
+         age_18_29 = a18_29 * census_hosp$pop18_29[2]/100000,
+         age_30_39 = a30_39 * census_hosp$pop30_39[2]/100000,
+         age_40_49 = a40_49 * census_hosp$pop40_49[2]/100000,
+         age_50_64 = a50_64 * census_hosp$pop50_64[2]/100000,
+         age_65_74 = a65_74 * census_hosp$pop65_74[2]/100000,
+         age_75_84 = a75_84 * census_hosp$pop75_84[2]/100000,
+         age_85 = a85 * census_hosp$pop85[2]/100000
   ) -> cases_2021_hosp
 
 #Bind together 2020 and 2021 
 df_hosp <- rbind(cases_2020_hosp, cases_2021_hosp)
 
-df_hosp$cases <- as.numeric(as.character(apply(df_hosp[,c(19:28)], 1, function(x) paste(x[!is.na(x)], collapse = ", "))))

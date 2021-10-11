@@ -56,7 +56,7 @@ cases %>%
 
 #Factor age group to ensure proper arrangement
 df_shiny_rate$age_group <- factor(df_shiny_rate$age_group, levels = c("a0_4", "a5_11", "a12_15", "a16_17", "a18_29", "a30_39", "a40_49", "a50_64", "a65_74", "a75"), 
-                             labels = c("0-4 Years", "5-11 Years", "12-15 Years", "16-17 Years", "18-29 Years", "30-39 Years", "40-49 Years", "50-64 Years", "65-74 Years", "≥75 Years"))
+                             labels = c("0-4 Years", "5-11 Years", "12-15 Years", "16-17 Years", "18-29 Years", "30-39 Years", "40-49 Years", "50-64 Years", "65-74 Years", "75+ Years"))
 #Ensure 'week' column is date format
 df_shiny_rate$week <- as.Date(df_shiny_rate$week)
 
@@ -105,7 +105,7 @@ df %>%
 
 #Factor age group to ensure proper arrangement
 df_shiny$age_group <- factor(df_shiny$age_group, levels = c("age_0_4", "age_5_11", "age_12_15", "age_16_17", "age_18_29", "age_30_39", "age_40_49", "age_50_64", "age_65_74", "age_75"), 
-                       labels = c("0-4 Years", "5-11 Years", "12-15 Years", "16-17 Years", "18-29 Years", "30-39 Years", "40-49 Years", "50-64 Years", "65-74 Years", "≥75 Years"))
+                       labels = c("0-4 Years", "5-11 Years", "12-15 Years", "16-17 Years", "18-29 Years", "30-39 Years", "40-49 Years", "50-64 Years", "65-74 Years", "75+ Years"))
 #Ensure 'week' column is date format
 df_shiny$week <- as.Date(df_shiny$week)
 
@@ -122,7 +122,7 @@ total3039<-sum(df_shiny$cases[df_shiny$age_group=="30-39 Years"])
 total4049<-sum(df_shiny$cases[df_shiny$age_group=="40-49 Years"])
 total5064<-sum(df_shiny$cases[df_shiny$age_group=="50-64 Years"])
 total6574<-sum(df_shiny$cases[df_shiny$age_group=="65-74 Years"])
-total75<-sum(df_shiny$cases[df_shiny$age_group=="≥75 Years"])
+total75<-sum(df_shiny$cases[df_shiny$age_group=="75+ Years"])
 total.overall <- sum(df_shiny$cases)
 total.kidsunvax <- sum(df_shiny$cases[df_shiny$age_group%in%c("0-4 Years", "5-11 Years")])
 total.kidsvax <- sum(df_shiny$cases[df_shiny$age_group%in%c("0-4 Years", "5-11 Years", "12-15 Years")])
@@ -141,7 +141,7 @@ df_shiny$corrected_cases[df_shiny$age_group=="30-39 Years"]<-df_shiny$cases[df_s
 df_shiny$corrected_cases[df_shiny$age_group=="40-49 Years"]<-df_shiny$cases[df_shiny$age_group=="40-49 Years"]*1.0079
 df_shiny$corrected_cases[df_shiny$age_group=="50-64 Years"]<-df_shiny$cases[df_shiny$age_group=="50-64 Years"]*1.0070
 df_shiny$corrected_cases[df_shiny$age_group=="65-74 Years"]<-df_shiny$cases[df_shiny$age_group=="65-74 Years"]*(1-0.0418)
-df_shiny$corrected_cases[df_shiny$age_group=="≥75 Years"]<-df_shiny$cases[df_shiny$age_group=="≥75 Years"]*(1-0.0279)
+df_shiny$corrected_cases[df_shiny$age_group=="75+ Years"]<-df_shiny$cases[df_shiny$age_group=="75+ Years"]*(1-0.0279)
 
 ### compute percent diff by age group
 df_shiny %>%
