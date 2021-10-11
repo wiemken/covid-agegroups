@@ -1,3 +1,5 @@
+"COVID-19-Associated Hospitalization Rates (per 100,000 population) for the COVID-NET Network (downloaded on "Oct-11-2021)
+Centers for Disease Control and Prevention.
 CATCHMENT,NETWORK,YEAR,MMWR-YEAR,MMWR-WEEK,AGE CATEGORY,SEX,RACE,CUMULATIVE RATE,WEEKLY RATE 
 California,EIP,2020-21,2020,10,Overall,Overall,White,0.2,0.2
 California,EIP,2020-21,2020,10,Overall,Overall,Black,0,0
@@ -37535,18 +37537,18 @@ California,EIP,2020-21,2021,52,>= 18,Overall,Overall,null,null
 Colorado,EIP,2020-21,2021,52,>= 18,Overall,Overall,null,null
 Entire Network,COVID-NET,2020-21,2021,52,>= 18,Overall,Overall,null,null
 Connecticut,EIP,2020-21,2021,52,>= 18,Overall,Overall,null,null
-,,,,,,,,,
-Disclaimer:,,,,,,,,,
-The Coronavirus Disease 2019 (COVID-19)-Associated Hospitalization Surveillance Network (COVID-NET),,,,,,,,,
-hospitalization data are preliminary and subject to change as more data become available. In,,,,,,,,,
-"particular, case counts and rates for recent hospital admissions are subject to lag. As data are",,,,,,,,,
-"received each week, prior case counts and rates are updated accordingly.  COVID-NET conducts",,,,,,,,,
-population-based surveillance for laboratory-confirmed COVID-19-associated hospitalizations in,,,,,,,,,
-children (less than 18 years of age) and adults. COVID-NET covers nearly 100 counties in the 10,,,,,,,,,
-"Emerging Infections Program (EIP) states (CA, CO, CT, GA, MD, MN, NM, NY, OR, TN) and four",,,,,,,,,
-"Influenza Hospitalization Surveillance Project (IHSP) states (IA, MI, OH, and UT). Cumulative and",,,,,,,,,
-"weekly unadjusted incidence rates (per 100,000 population) are calculated using the National Center",,,,,,,,,
-for Health Statistics' (NCHS) vintage 2019 bridged-race postcensal population estimates for the,,,,,,,,,
-counties included in the surveillance catchment area. The rates provided are likely to be,,,,,,,,,
-underestimated as COVID-19-associated hospitalizations might be missed due to test availability and,,,,,,,,,
-provider or facility testing practices.,,,,,,,,,
+
+Disclaimer:
+The Coronavirus Disease 2019 (COVID-19)-Associated Hospitalization Surveillance Network (COVID-NET)
+hospitalization data are preliminary and subject to change as more data become available. In
+"particular, case counts and rates for recent hospital admissions are subject to lag. As data are"
+"received each week, prior case counts and rates are updated accordingly.  COVID-NET conducts"
+population-based surveillance for laboratory-confirmed COVID-19-associated hospitalizations in
+children (less than 18 years of age) and adults. COVID-NET covers nearly 100 counties in the 10
+"Emerging Infections Program (EIP) states (CA, CO, CT, GA, MD, MN, NM, NY, OR, TN) and four"
+"Influenza Hospitalization Surveillance Project (IHSP) states (IA, MI, OH, and UT). Cumulative and"
+"weekly unadjusted incidence rates (per 100,000 population) are calculated using the National Center"
+for Health Statistics' (NCHS) vintage 2019 bridged-race postcensal population estimates for the
+counties included in the surveillance catchment area. The rates provided are likely to be
+underestimated as COVID-19-associated hospitalizations might be missed due to test availability and
+provider or facility testing practices.
