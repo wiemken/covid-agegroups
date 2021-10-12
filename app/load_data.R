@@ -15,6 +15,7 @@ library(tidyr)
 library(rio)
 library(Hmisc)
 library(scales)
+library(tidycensus)
 
 #Load in US Census data estimates from: https://www.census.gov/data/datasets/2017/demo/popproj/2017-popproj.html
 census <- vroom("https://www2.census.gov/programs-surveys/popproj/datasets/2017/2017-popproj/np2017_d1_mid.csv")
