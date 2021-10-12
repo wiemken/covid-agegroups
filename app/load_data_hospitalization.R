@@ -4,13 +4,14 @@ library(vroom)
 library(MMWRweek)
 
 #Load in US Census data estimates from: https://www.census.gov/data/datasets/2017/demo/popproj/2017-popproj.html
-census_hosp <- vroom::vroom("https://www2.census.gov/programs-surveys/popproj/datasets/2017/2017-popproj/np2017_d1_mid.csv")
+#census_hosp <<- vroom::vroom("https://www2.census.gov/programs-surveys/popproj/datasets/2017/2017-popproj/np2017_d1_mid.csv")
+census <- vroom("C:/Users/Wiemkt/OneDrive - Pfizer/Documents/Research/covid-agegroups/app/census.csv")
 
 ### Clean names with janitor::clean_names
 ### sex, origin, race == 0 represents all categories combined
 ### keep only 2020/2021
 ### compute population sums by age groups
-census_hosp %>%
+census %>%
   janitor::clean_names() %>%
   filter(sex == 0, origin==0, race==0, year %in%c(2020, 2021)) %>%
   rowwise() %>%
@@ -64,6 +65,10 @@ df_shiny_rate_hosp$week <- MMWRweek::MMWRweek2Date(MMWRyear=df_shiny_rate_hosp$y
 df_shiny_rate_hosp<- df_shiny_rate_hosp[,c("week", "year", "age_group", "cases" = "weekly_rate")]
 
 
+# df_shiny_rate_hosp$age_group <- factor(df_shiny_rate_hosp$age_group, 
+#                                        levels = c("a0_4", "a5_11", "a12_17", "a18_29", "a30_39", "a40_49", "a50_64", "a65_74", "a75_84", "a85"),
+#                                        labels = c("0-4 Years", "5-11 Years", "12-17 Years", "18-29 Years", "30-39 Years", "40-49 Years", "50-64 Years", "65-74 Years", "75-84 Years", "85+ Years"))
+
 ############################################################
 #################### EDIT  #################################
 ############################################################
@@ -109,4 +114,16 @@ cases_2021_hosp %>%
 
 #Bind together 2020 and 2021 
 df_hosp <- rbind(cases_2020_hosp, cases_2021_hosp)
+
+#Pivot to long format for plotting
+df_hosp %>%
+  pivot_longer(cols = starts_with("age"), names_to = "age_group", values_to = "cases") ->> df_shiny_hosp
+
+#Factor age group to ensure proper arrangement
+df_shiny_hosp$age_group <- factor(df_shiny_hosp$age_group, levels = c("age_0_4", "age_5_11", "age_12_17", "age_18_29", "age_30_39", "age_40_49", "age_50_64", "age_65_74", "age_75_84", "age_85"), 
+                             labels = c("0-4 Years", "5-11 Years", "12-17 Years", "18-29 Years", "30-39 Years", "40-49 Years", "50-64 Years", "65-74 Years", "75-84 Years", "85+ Years"))
+#Ensure 'week' column is date format
+df_shiny_hosp$week <- as.Date(df_shiny_hosp$week)
+
+df_shiny_hosp$corrected_cases<-df_shiny_hosp$cases
 

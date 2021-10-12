@@ -17,7 +17,7 @@ ui <- fluidPage(
             radioButtons(inputId = "plottype", label = "Plot type?", choices = c("Cases" = 1, "Percentage Change in Cases" = 2, "Rate Per 100,000 (Cases)" = 3,
                                                                                     "Hospitalizations" = 4, "Percentage Change in Hospitalizations" = 5, "Rate Per 100,000 (Hospitalizations)" = 6)
                          ),
-            radioButtons(inputId = "bwcolor", label = "Plot color scheme?", choices = c("Color" = T, "Black and White" = F)),
+            radioButtons(inputId = "bwcolor", label = "Plot color scheme", choices = c("Color" = T, "Black and White" = F)),
             selectizeInput(inputId = "age_group_selector", label = "Age? (Select all that apply, selecting 'All' will override all other choices",
                         choices = c("All", levels(df_shiny$age_group)), selected = levels(df_shiny$age_group)[1],
                         multiple = T),

@@ -18,7 +18,9 @@ library(scales)
 library(tidycensus)
 
 #Load in US Census data estimates from: https://www.census.gov/data/datasets/2017/demo/popproj/2017-popproj.html
-census <- vroom("https://www2.census.gov/programs-surveys/popproj/datasets/2017/2017-popproj/np2017_d1_mid.csv")
+#census <- vroom("https://www2.census.gov/programs-surveys/popproj/datasets/2017/2017-popproj/np2017_d1_mid.csv")
+#write.table(census, "C:/Users/Wiemkt/OneDrive - Pfizer/Documents/Research/covid-agegroups/app/census.csv", sep=",", row.names=F, na="")
+census <- vroom("C:/Users/Wiemkt/OneDrive - Pfizer/Documents/Research/covid-agegroups/app/census.csv")
 
 ### Clean names with janitor::clean_names
 ### sex, origin, race == 0 represents all categories combined
