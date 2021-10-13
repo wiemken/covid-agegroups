@@ -2,10 +2,11 @@ library(rio)
 library(tidyverse)
 library(vroom)
 library(MMWRweek)
+library(janitor)
 
 #Load in US Census data estimates from: https://www.census.gov/data/datasets/2017/demo/popproj/2017-popproj.html
 #census_hosp <<- vroom::vroom("https://www2.census.gov/programs-surveys/popproj/datasets/2017/2017-popproj/np2017_d1_mid.csv")
-census <- vroom("C:/Users/Wiemkt/OneDrive - Pfizer/Documents/Research/covid-agegroups/app/census.csv")
+census <- vroom("census.csv")
 
 ### Clean names with janitor::clean_names
 ### sex, origin, race == 0 represents all categories combined

@@ -3,13 +3,15 @@
 #
 #------------------------------#
 #Libraries
-library(dplyr)
+library(tidyverse)
 library(ggplot2)
 library(plotly)
 library(scales)
 library(tidyr)
 library(Hmisc)
 library(data.table)
+library(janitor)
+
 
 #Begin functions
 plotter_hosp <- function(data, corrected = F, age_groups, color = T){
