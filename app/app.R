@@ -143,15 +143,25 @@ server <- function(input, output) {
             DT::renderDataTable(
                 datatable(
                 prepdatatable(
-                    df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week", "Rate")), rownames = F, extensions = "Buttons", 
-                options = list(paging = TRUE,
-                               scrollX=TRUE, 
-                               searching = TRUE,
-                               ordering = TRUE,
-                               dom = 'Bfrtip',
-                               buttons = c('copy', 'csv', 'excel', 'pdf'),
-                               pageLength=5, 
-                               lengthMenu=c(3,5,10)))
+                    df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week", "Rate")), rownames = F,
+                                extensions = 'Buttons'
+                                , options = list( 
+                                    dom = "Blfrtip"
+                                    , buttons = 
+                                        list("copy", list(
+                                            extend = "collection"
+                                            , buttons = c("csv", "excel", "pdf")
+                                            , text = "Download"
+                                        ) ) # end of buttons customization
+                                    
+                                    # customize the length menu
+                                    , lengthMenu = list( c(10, 20, -1) # declare values
+                                                         , c(10, 20, "All") # declare titles
+                                    ) # end of lengthMenu customization
+                                    , pageLength = 10
+                                    
+                                    
+                                ))
                 ), 
              ),
             hr(),
@@ -159,15 +169,25 @@ server <- function(input, output) {
             DT::renderDataTable(
                 datatable(
                 prepdatatable(
-                    df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week","Age_Group","Cases","Percent_Diff")), rownames = F, extensions = "Buttons", 
-                options = list(paging = TRUE,
-                               scrollX=TRUE, 
-                               searching = TRUE,
-                               ordering = TRUE,
-                               dom = 'Bfrtip',
-                               buttons = c('copy', 'csv', 'excel', 'pdf'),
-                               pageLength=5, 
-                               lengthMenu=c(3,5,10)))
+                    df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week","Age_Group","Cases","Percent_Diff")), rownames = F,
+                extensions = 'Buttons'
+                , options = list( 
+                    dom = "Blfrtip"
+                    , buttons = 
+                        list("copy", list(
+                            extend = "collection"
+                            , buttons = c("csv", "excel", "pdf")
+                            , text = "Download"
+                        ) ) # end of buttons customization
+                    
+                    # customize the length menu
+                    , lengthMenu = list( c(10, 20, -1) # declare values
+                                         , c(10, 20, "All") # declare titles
+                    ) # end of lengthMenu customization
+                    , pageLength = 10
+                    
+                    
+                ))
                 )
         )
         )
@@ -181,15 +201,25 @@ server <- function(input, output) {
                 DT::renderDataTable(
                     datatable(
                         prepdatatable_hosp(
-                            df_shiny_hosp, age_groups = input$age_group_selector, sub = c("Week", "Rate")), rownames = F, extensions = "Buttons", 
-                        options = list(paging = TRUE,
-                                       scrollX=TRUE, 
-                                       searching = TRUE,
-                                       ordering = TRUE,
-                                       dom = 'Bfrtip',
-                                       buttons = c('copy', 'csv', 'excel', 'pdf'),
-                                       pageLength=5, 
-                                       lengthMenu=c(3,5,10)))
+                            df_shiny_hosp, age_groups = input$age_group_selector, sub = c("Week", "Rate")), rownames = F,
+                        extensions = 'Buttons'
+                        , options = list( 
+                            dom = "Blfrtip"
+                            , buttons = 
+                                list("copy", list(
+                                    extend = "collection"
+                                    , buttons = c("csv", "excel", "pdf")
+                                    , text = "Download"
+                                ) ) # end of buttons customization
+                            
+                            # customize the length menu
+                            , lengthMenu = list( c(10, 20, -1) # declare values
+                                                 , c(10, 20, "All") # declare titles
+                            ) # end of lengthMenu customization
+                            , pageLength = 10
+                            
+                            
+                        ))
                     ), 
             ),
             hr(),
@@ -197,15 +227,25 @@ server <- function(input, output) {
                 DT::renderDataTable(
                     datatable(
                         prepdatatable_hosp(
-                            df_shiny_hosp, age_groups = input$age_group_selector, sub = c("Week","Age_Group","Cases","Percent_Diff")), rownames = F, extensions = "Buttons", 
-                        options = list(paging = TRUE,
-                                       scrollX=TRUE, 
-                                       searching = TRUE,
-                                       ordering = TRUE,
-                                       dom = 'Bfrtip',
-                                       buttons = c('copy', 'csv', 'excel', 'pdf'),
-                                       pageLength=5, 
-                                       lengthMenu=c(3,5,10)))
+                            df_shiny_hosp, age_groups = input$age_group_selector, sub = c("Week","Age_Group","Cases","Percent_Diff")), rownames = F,
+                        extensions = 'Buttons'
+                        , options = list( 
+                            dom = "Blfrtip"
+                            , buttons = 
+                                list("copy", list(
+                                    extend = "collection"
+                                    , buttons = c("csv", "excel", "pdf")
+                                    , text = "Download"
+                                ) ) # end of buttons customization
+                            
+                            # customize the length menu
+                            , lengthMenu = list( c(10, 20, -1) # declare values
+                                                 , c(10, 20, "All") # declare titles
+                            ) # end of lengthMenu customization
+                            , pageLength = 10
+                            
+                            
+                        ))
                     )
             )
         )
