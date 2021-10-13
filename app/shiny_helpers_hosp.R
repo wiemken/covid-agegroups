@@ -260,34 +260,26 @@ plotterrate_hosp <- function(data, age_groups, color = F){
   }
 }
 
-prepdatatable_hosp <- function(data, corrected = F, age_groups, sub){
-  names(data)<-c("Week", "0-4 Rate", "5-11 Rate", "12-15 Rate", "16-17 Rate", "18-29 Rate",
-                 "30-39 Rate", "40-49 Rate", "50-64 Rate", "65-74 Rate", "75-84 Rate", "Year",
-                 "Age_Group", "Cases", "Corrected_Cases", "Percent_Difference_Corrected", "Percent_Difference")
+prepdatatable_hosp <- function(data, age_groups, sub){
+  data <- data[,c("week", "a0_4", "a5_11", "a12_17", "a18_29", "a30_39", 
+                  "a40_49", "a50_64", "a65_74", "a75_84", "a85", "year", 
+                  "age_group", "cases", "percent_difference")]
+  names(data)<-c("Week", "0-4 Rate", "5-11 Rate", "12-17 Rate", "18-29 Rate",
+                 "30-39 Rate", "40-49 Rate", "50-64 Rate", "65-74 Rate", "75-84 Rate", "85+ Rate",
+                 "Year", "Age_Group", "Cases", "Percent_Difference")
   if("All" %in% age_groups){
     age_groups<-levels(data$Age_Group)
   }
-  if(corrected == F){
-    data<-subset(data, select = -c(Corrected_Cases, Percent_Difference_Corrected))
+  data <- data[data$Age_Group %in% age_groups,]
+  
     grab<-gsub( " .*$", "", age_groups)
     grab <- gsub("≥", "", grab)
     data %>%
-      select(Week, starts_with(grab), Age_Group, Cases, Percent_Difference) %>%
-      mutate(Cases = round(Cases)) -> data
-    data <- data[names(data)[names(data)%in%grep(paste(sub, collapse = "|"), names(data), value = T)]]
-    return(data)
-  }
-  if(corrected == T){
-    data<-subset(data, select = -c(Cases, Percent_Difference))
-    grab<-gsub( " .*$", "", age_groups)
-    grab <- gsub("≥", "", grab)
-    data %>%
-      select(Week, starts_with(grab), Age_Group, Corrected_Cases, Percent_Difference_Corrected) %>%
-      mutate(Corrected_Cases = round(Corrected_Cases)) -> data
+      select(Week, starts_with(grab), Age_Group, Cases, Percent_Difference) -> data
+    data$Cases <- round(data$Cases,0)
     data <- data[names(data)[names(data)%in%grep(paste(sub, collapse = "|"),names(data), value = T)]]
     return(data)
   }
-}
 
 
 
