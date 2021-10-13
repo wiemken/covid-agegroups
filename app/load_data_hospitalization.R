@@ -65,9 +65,6 @@ df_shiny_rate_hosp$week <- MMWRweek::MMWRweek2Date(MMWRyear=df_shiny_rate_hosp$y
 df_shiny_rate_hosp<- df_shiny_rate_hosp[,c("week", "year", "age_group", "cases" = "weekly_rate")]
 
 
-# df_shiny_rate_hosp$age_group <- factor(df_shiny_rate_hosp$age_group, 
-#                                        levels = c("a0_4", "a5_11", "a12_17", "a18_29", "a30_39", "a40_49", "a50_64", "a65_74", "a75_84", "a85"),
-#                                        labels = c("0-4 Years", "5-11 Years", "12-17 Years", "18-29 Years", "30-39 Years", "40-49 Years", "50-64 Years", "65-74 Years", "75-84 Years", "85+ Years"))
 
 ############################################################
 #################### EDIT  #################################
@@ -76,6 +73,18 @@ df_shiny_rate_hosp<- df_shiny_rate_hosp[,c("week", "year", "age_group", "cases" 
 
 cases_2020_hosp <- subset(df_shiny_rate_hosp, df_shiny_rate_hosp$year==2020)
 cases_2021_hosp <- subset(df_shiny_rate_hosp, df_shiny_rate_hosp$year==2021)
+
+### now going to mod the group for rate plotter
+df_shiny_rate_hosp$age_group <- factor(df_shiny_rate_hosp$age_group,
+                                       levels = c("a0_4", "a5_11", "a12_17", "a18_29", "a30_39", "a40_49", "a50_64", "a65_74", "a75_84", "a85"),
+                                       labels = c("0-4 Years", "5-11 Years", "12-17 Years", "18-29 Years", "30-39 Years", "40-49 Years", "50-64 Years", "65-74 Years", "75-84 Years", "85+ Years"))
+
+df_shiny_rate_hosp %>%
+  rename(
+    cases = "weekly_rate"
+  ) -> df_shiny_rate_hosp
+
+df_shiny_rate_hosp <- df_shiny_rate_hosp[complete.cases(df_shiny_rate_hosp),]
 
 ### compute cases for 2020 and 2021 separately
 ### to compute, multiply age-specific rate per 100,000 from CDC PowerBI by census population for age group and divide by 100,000
@@ -126,4 +135,18 @@ df_shiny_hosp$age_group <- factor(df_shiny_hosp$age_group, levels = c("age_0_4",
 df_shiny_hosp$week <- as.Date(df_shiny_hosp$week)
 
 df_shiny_hosp$corrected_cases<-df_shiny_hosp$cases
+
+df_shiny_hosp <- df_shiny_hosp[complete.cases(df_shiny_hosp),]
+
+
+df_shiny_hosp %>%
+  group_by(age_group) %>%
+  mutate(percent_difference = round((cases - lag(cases)) / cases *100,1),
+         percent_difference = round((cases - lag(cases)) / cases *100,1),
+         percent_difference_corrected = percent_difference) %>%
+  ungroup() ->> df_shiny_hosp
+
+
+df_shiny_hosp$percent_difference[is.nan(df_shiny_hosp$percent_difference)]<-0
+df_shiny_hosp$percent_difference_corrected[is.nan(df_shiny_hosp$percent_difference_corrected)]<-0
 

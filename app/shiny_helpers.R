@@ -269,8 +269,9 @@ prepdatatable <- function(data, corrected = F, age_groups, sub){
    }
    if(corrected == F){
       data<-subset(data, select = -c(Corrected_Cases, Percent_Difference_Corrected))
+      data <- data[data$Age_Group %in% age_groups,]
       grab<-gsub( " .*$", "", age_groups)
-      grab <- gsub("≥", "", grab)
+      #grab <- gsub("≥", "", grab)
       data %>%
          select(Week, starts_with(grab), Age_Group, Cases, Percent_Difference) %>%
          mutate(Cases = round(Cases)) -> data
@@ -279,8 +280,9 @@ prepdatatable <- function(data, corrected = F, age_groups, sub){
    }
    if(corrected == T){
       data<-subset(data, select = -c(Cases, Percent_Difference))
+      data <- data[data$Age_Group %in% age_groups,]
       grab<-gsub( " .*$", "", age_groups)
-      grab <- gsub("≥", "", grab)
+      #grab <- gsub("≥", "", grab)
       data %>%
          select(Week, starts_with(grab), Age_Group, Corrected_Cases, Percent_Difference_Corrected) %>%
          mutate(Corrected_Cases = round(Corrected_Cases)) -> data

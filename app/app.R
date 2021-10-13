@@ -6,6 +6,8 @@
 library(shiny)
 library(DT)
 source("shiny_helpers.R")
+source("shiny_helpers_hosp.R")
+
 source("load_data.R")
 source("load_data_hospitalization.R")
 
@@ -18,18 +20,48 @@ ui <- fluidPage(
                                                                                     "Hospitalizations" = 4, "Percentage Change in Hospitalizations" = 5, "Rate Per 100,000 (Hospitalizations)" = 6)
                          ),
             radioButtons(inputId = "bwcolor", label = "Plot color scheme", choices = c("Color" = T, "Black and White" = F)),
-            selectizeInput(inputId = "age_group_selector", label = "Age? (Select all that apply, selecting 'All' will override all other choices",
-                        choices = c("All", levels(df_shiny$age_group)), selected = levels(df_shiny$age_group)[1],
-                        multiple = T),
             
-            selectizeInput(inputId = "correctyn", label = "Type of data to analyze", choices = c("Corrected" = T, "Not Corrected" = F))
+            conditionalPanel(condition = "input.plottype == 1 || input.plottype == 2 || input.plottype == 3 ",
+                selectizeInput(inputId = "age_group_selector", label = "Select age group(s)",
+                        choices = c("All", levels(df_shiny$age_group)), selected = levels(df_shiny$age_group)[1],
+                        multiple = T)
+            ),
+            
+            conditionalPanel(condition = "input.plottype == 4 || input.plottype == 5 || input.plottype == 6 ",
+                selectizeInput(inputId = "age_group_selector_hosp", label = "Select age group(s)",
+                           choices = c("All", levels(df_shiny_hosp$age_group)), selected = levels(df_shiny_hosp$age_group)[1],
+                           multiple = T)
+            ),# end conditional panel
+            
+            conditionalPanel(condition = "input.plottype == 1 || input.plottype == 2 || input.plottype == 3 ",
+                selectizeInput(inputId = "correctyn", label = "Type of data to analyze (applies to cases only)", choices = c("Corrected" = T, "Not Corrected" = F))
+            ),
+            
+            
+            hr(),
+            strong("Data Availability:"),
+            p(),
+            tags$a(href = "https://www2.census.gov/programs-surveys/popproj/datasets/2017/2017-popproj/np2017_d1_mid.csv", 
+                   "1. US Census Bureau Population Estimates"),
+            br(),
+            tags$a(href = "https://covid.cdc.gov/covid-data-tracker/#demographicsovertime",
+                   "2. COVID-19 Incidence Rates by Age Group"),
+            br(),
+            tags$a(href = "https://covid.cdc.gov/covid-data-tracker/#covidnet-hospitalization-network",
+                   "3. COVID-19 Hospitalization Rates by Age Group")
+            
         ),
         
         mainPanel(
             br(),
             br(),
-            uiOutput('plot_output', height = "750"),
-            uiOutput("datatable")
+            conditionalPanel(condition = "input.plottype == 1 || input.plottype == 2 || input.plottype == 3 ",
+                uiOutput('plot_output', height = "750")
+                ),
+            
+            conditionalPanel(condition = "input.plottype == 1 || input.plottype == 2 || input.plottype == 3 ",
+                uiOutput("datatable")
+            )
         ) 
     ) 
 ) 
@@ -49,13 +81,13 @@ server <- function(input, output) {
             renderPlotly(plotterrate(df_shiny_rate, age_groups = input$age_group_selector, color = input$bwcolor))
         },
         if(input$plottype == 4){
-            renderPlotly(plotterrate(df_shiny_rate_hosp, age_groups = input$age_group_selector, color = input$bwcolor))
+            renderPlotly(plotter_hosp(df_shiny_hosp, age_groups = input$age_group_selector_hosp, color = input$bwcolor, corrected = input$correctyn))
         },
         if(input$plottype == 5){
-            renderPlotly(plotterrate(df_shiny_rate_hosp, age_groups = input$age_group_selector, color = input$bwcolor))
+            renderPlotly(plotterpct_hosp(df_shiny_hosp, age_groups = input$age_group_selector_hosp, color = input$bwcolor, corrected = input$correctyn))
         },
         if(input$plottype == 6){
-            renderPlotly(plotterrate(df_shiny_rate_hosp, age_groups = input$age_group_selector, color = input$bwcolor))
+            renderPlotly(plotterrate_hosp(df_shiny_rate_hosp, age_groups = input$age_group_selector_hosp, color = input$bwcolor))
         }
         )
     })
@@ -63,9 +95,9 @@ server <- function(input, output) {
     output$datatable <- renderUI({
         tagList(
         fluidRow(
-            DT::renderDataTable(datatable(prepdatatable(df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week","Case Rate")), rownames = F))
-        ),
-        hr(),
+            DT::renderDataTable(datatable(prepdatatable(df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week", "Rate")), rownames = F)), 
+             ),
+            hr(),
         fluidRow(
             DT::renderDataTable(datatable(prepdatatable(df_shiny, age_groups = input$age_group_selector, corrected = input$correctyn, sub = c("Week","Age_Group","Cases","Percent_Diff")), rownames = F))
         )

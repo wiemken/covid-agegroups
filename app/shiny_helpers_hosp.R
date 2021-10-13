@@ -17,7 +17,7 @@ plotter_hosp <- function(data, corrected = F, age_groups, color = T){
     age_groups<-levels(data$age_group)
   }
   data <- data[data$age_group%in%c(age_groups),]
-  dateVec <- seq(from = min(data$week), to = max(data$week), by = "weeks")
+  dateVec <- seq(from = min(data$week, na.rm=T), to = max(data$week, na.rm=T), by = "weeks")
   if(color == T){
     if(corrected == F){yvar <- "cases"}
     if(corrected == T){yvar <- "corrected_cases"}
@@ -77,7 +77,7 @@ plotter_hosp <- function(data, corrected = F, age_groups, color = T){
       scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "#BEBEBE", "5-11 Years" = "#C0C0C0", "12-17 Years" = "#C8C8C8",
                                                          "16-17 Years" = "#D0D0D0", "18-29 Years" = "#D3D3D3", "30-39 Years" = "#D8D8D8", "40-49 Years" = "#DCDCDC", "50-64 Years" = "#E0E0E0",
                                                          "65-74 Years" = "#E8E8E8", "75-84 Years" = "#F0F0F0", "85+ Years" = "#A8A8A8")) +
-      scale_x_date(breaks = "2 weeks", limits = c(min(dateVec), max = max(dateVe, na.rm=T)), expand = c(0.01428571,0.01428571)) +
+      scale_x_date(breaks = "2 weeks", limits = c(min(dateVec), max = max(dateVec, na.rm=T)), expand = c(0.01428571,0.01428571)) +
       theme(
         panel.background = element_blank(),
         axis.line = element_line(color = "darkgray"),
@@ -96,7 +96,7 @@ plotterpct_hosp <- function(data, corrected = F, age_groups, color = F){
     age_groups<-levels(data$age_group)
   }
   data <- data[data$age_group%in%c(age_groups),]
-  dateVec <- seq(from = min(data$week), to = max(data$week, na.rm=T), by = "weeks")
+  dateVec <- seq(from = min(data$week, na.rm=T), to = max(data$week, na.rm=T), by = "weeks")
   
   if(color == T){
     if(corrected == F){yvar <- "percent_difference"}
@@ -193,7 +193,7 @@ plotterrate_hosp <- function(data, age_groups, color = F){
   dateVec <- seq(from = min(data$week), to = max(data$week), by = "weeks")
   if(color == T){
     yvar <- "cases"
-    brks <- c(seq(0, max(data[yvar], na.rm=T), by = (max(data[yvar], na.rm=T)+(25-max(data[yvar], na.rm=T)%%25))/5))
+    brks <- c(seq(0, max(data[yvar], na.rm=T), by = (max(data[yvar], na.rm=T)+(2-max(data[yvar], na.rm=T)%%2))/5))
     p<-ggplot(data,
               aes(linetype=age_group,
                   color = age_group,
@@ -227,7 +227,7 @@ plotterrate_hosp <- function(data, age_groups, color = F){
   }
   if(color == F){
     yvar <- "cases"
-    brks <- c(seq(0, max(data[yvar], na.rm=T), by = (max(data[yvar], na.rm=T)+(25-max(data[yvar], na.rm)%%25))/5))
+    brks <- c(seq(0, max(data[yvar], na.rm=T), by = (max(data[yvar], na.rm=T)+(2-max(data[yvar], na.rm=T)%%2))/5))
     p<-ggplot(data,
               aes(linetype=age_group,
                   color = age_group,
