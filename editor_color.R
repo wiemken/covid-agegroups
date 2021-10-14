@@ -286,3 +286,36 @@ htmlwidgets::saveWidget(yo_corrected, "~/Desktop/plot_corrected.html")
 
 
 
+### rate plot
+df <- rio::import("https://github.com/wiemken/covid-agegroups/blob/4630edcfd971137dd30a5fe39340778a4563677a/case_data.xlsx?raw=true")
+df.plot <- df[,c(1:4)]
+df.plot %>%
+  pivot_longer(cols = starts_with("a"),names_to = "age_group", values_to = "cases") -> df.plot
+df.plot$age_group <- factor(df.plot$age_group, levels = c("a0_4", "a5_11", "a12_15"), labels = c("0-4 Years", "5-11 Years", "12-15 Years"))
+df.plot$week <- as.Date(df.plot$week)
+
+## make every 3rd label
+labz <- unique(as.Date(df.plot$week))[c(T,F,F)]
+
+### plot clustered bar graph
+p.rate<-ggplot(df.plot,
+          aes(colour=age_group, 
+              y=cases, 
+              x=week)) + 
+  geom_line(size=0.8) +
+  ylab("Incident Cases Per 100,000 Population \n") +
+  xlab("\nCase Earliest Date By End of Week") +
+  scale_y_continuous(label=comma, limits=c(0,350), breaks=c(seq(0,350, by=50))) +
+  scale_colour_manual(name = "Age Group", values = c("0-4 Years" = "#a6cee3", "5-11 Years" = "#1f78b4", "12-15 Years" = "#b2df8a")) +
+  scale_x_date(breaks = as.Date(labz)) +
+  theme(
+    panel.background = element_blank(),
+    axis.line = element_line(color = "darkgray"),
+    axis.text.x = element_text(angle = 90),
+    legend.key=element_blank(),
+    legend.background=element_blank(),
+    legend.position = "right",
+    legend.key.width = unit(3, "line")
+  )
+p.rate
+ggsave(plot = p.rate, "~/plot.png", width=9, height=5)
