@@ -1,0 +1,13 @@
+name: covid_agegroups
+title: covid_agegroups
+username:
+account: surveillance
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4565440
+bundleId: 5135369
+url: https://surveillance.shinyapps.io/covid_agegroups/
+when: 1634144199.59232
+lastSyncTime: 1634144199.59232
+asMultiple: FALSE
+asStatic: FALSE
