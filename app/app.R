@@ -63,7 +63,7 @@ ui <- fluidPage(
             p(),
             strong("Manuscript"),
             br(),
-            tags$a(href = "https://github.com/wiemken/covid-agegroups/tree/main/Manuscript",
+            tags$a(href = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8550884/pdf/main.pdf",
                    "See publication in the American Journal of Infection Control (In Press)")
             
         ),
