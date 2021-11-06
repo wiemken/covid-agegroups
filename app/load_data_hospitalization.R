@@ -152,3 +152,4 @@ df_shiny_hosp$percent_difference_corrected[is.nan(df_shiny_hosp$percent_differen
 
 df_shiny_hosp$percent_difference[!is.finite(df_shiny_hosp$percent_difference)]<-0
 df_shiny_hosp$percent_difference_corrected[!is.finite(df_shiny_hosp$percent_difference_corrected)]<-0
+

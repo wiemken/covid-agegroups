@@ -204,7 +204,7 @@ server <- function(input, output) {
                 DT::renderDataTable(
                     datatable(
                         prepdatatable_hosp(
-                            df_shiny_hosp, age_groups = input$age_group_selector, sub = c("Week", "Rate")), rownames = F,
+                            df_shiny_hosp, age_groups = input$age_group_selector_hosp, sub = c("Week", "Rate")), rownames = F,
                         extensions = 'Buttons'
                         , options = list( 
                             dom = "Blfrtip"
@@ -230,7 +230,7 @@ server <- function(input, output) {
                 DT::renderDataTable(
                     datatable(
                         prepdatatable_hosp(
-                            df_shiny_hosp, age_groups = input$age_group_selector, sub = c("Week","Age_Group","Cases","Percent_Diff")), rownames = F,
+                            df_shiny_hosp, age_groups = input$age_group_selector_hosp, sub = c("Week","Age_Group","Cases","Percent_Diff")), rownames = F,
                         extensions = 'Buttons'
                         , options = list( 
                             dom = "Blfrtip"
