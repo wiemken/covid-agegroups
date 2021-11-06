@@ -96,7 +96,6 @@ cases_2021_hosp %>%
   pivot_wider(names_from = age_group, values_from = weekly_rate) -> cases_2021_hosp
 
 
-
 cases_2020_hosp %>%
   mutate(age_0_4 = a0_4 * census_hosp$pop0_4[1]/100000,
          age_5_11 = a5_11 * census_hosp$pop5_11[1]/100000,
