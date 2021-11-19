@@ -53,7 +53,7 @@ census %>%
 ### nov 18, 2021 no longer manual - automated scrape nightly
 
 cases <- vroom::vroom("https://cdc-covid-data-tracker.s3.amazonaws.com/covid-data-tracker.csv")
-cases <- data.frame(cases[,3:12])
+cases <- data.frame(cases[,2:11])
 names(cases) <- c("a0_4",	"a5_11",	"a12_15",	"a16_17",	"a18_29",	"a30_39",	"a40_49",	"a50_64",	"a65_74",	"a75") 
 cases$week <- seq.Date(from = as.Date("2020-03-07"),length.out = nrow(cases), by="week")
 cases <- cases[,c(ncol(cases), 1:ncol(cases)-1)]

@@ -34,7 +34,13 @@ census %>%
 ### hosp data from: https://covid.cdc.gov/covid-data-tracker/#covidnet-hospitalization-network
 ### need to manually download and upload to github - cdc download link has a token that changes
 ### skip first two lines b/c download has junk header
-df_hosp <- vroom::vroom("https://raw.githubusercontent.com/wiemken/covid-agegroups/main/COVID-19Surveillance_All_Data.csv", skip=2)
+#df_hosp <- vroom::vroom("https://raw.githubusercontent.com/wiemken/covid-agegroups/main/COVID-19Surveillance_All_Data.csv", skip=2)
+### read from Jacobs web stuff as of Nov 19
+df_hosp <- vroom::vroom("https://cdc-covid-data-tracker.s3.amazonaws.com/hospitalizations.csv")
+### force names to regular file download
+names(df_hosp) <- c("CATCHMENT", "NETWORK", "YEAR", "MMWR-YEAR", "MMWR-WEEK", "AGE CATEGORY", 
+  "SEX", "RACE", "CUMULATIVE RATE", "WEEKLY RATE")
+
 df_hosp %>%
   janitor::clean_names() %>%
   filter(catchment == "Entire Network",

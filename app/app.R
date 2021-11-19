@@ -58,7 +58,7 @@ ui <- fluidPage(
                    "3. COVID-19 Hospitalization Rates by Age Group"),
             br(),
             p(),
-            "As of Nov 11, 2021 data are updated nightly (Note, Case data 2 weeks lagged)",
+            "As of Nov 11, 2021 all data are updated nightly as avaialble (Note, Case data 2 weeks lagged)",
             hr(),
             p(),
             strong("Manuscript"),
